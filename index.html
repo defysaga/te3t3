@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MADS | TERMINAL v9.0</title>
+    <title>MADS | TERMINAL v10.0 | HEAVYWEIGHT</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -29,29 +29,25 @@
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-        .card { background: var(--card); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .card { background: var(--card); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
 
         .ticker-name { font-size: 0.7rem; color: var(--dim); text-transform: uppercase; margin-bottom: 5px; }
         .price { font-size: 1.4rem; font-weight: bold; margin-bottom: 10px; }
         .plus { color: var(--mint); }
         .minus { color: var(--coral); }
 
-        /* TRADING */
-        table { width: 100%; border-collapse: collapse; }
-        .trade-input { background: #000; border: 1px solid #222; color: var(--mint); padding: 5px; width: 50px; border-radius: 3px; }
-        .btn-buy { background: var(--mint); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 3px; }
-        .btn-yolo { background: var(--purple); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 3px; margin-left: 5px; }
+        /* THE CORRELATION ANIMATION (The "Size" Module) */
+        .size-container { margin-top: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 4px; border-left: 3px solid var(--purple); }
+        .size-label { font-size: 0.6rem; color: var(--purple); margin-bottom: 5px; letter-spacing: 1px; }
+        .size-bar-wrap { width: 100%; height: 12px; background: #000; border-radius: 10px; overflow: hidden; position: relative; }
+        .size-bar { height: 100%; background: linear-gradient(90deg, var(--purple), var(--mint)); transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .size-bar::after { content: '🍆'; position: absolute; right: -5px; top: -5px; font-size: 12px; }
 
-        /* CASINO EXTREME */
-        .slot-machine { text-align: center; border: 2px solid var(--gold); background: radial-gradient(circle, #001529 0%, #000c1a 100%); position: relative; overflow: hidden; }
+        /* CASINO */
+        .slot-machine { text-align: center; border: 2px solid var(--gold); background: radial-gradient(circle, #001529 0%, #000c1a 100%); padding: 30px; }
         .reels { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .reel { width: 80px; height: 100px; background: #05162b; border-radius: 5px; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; border: 2px solid #111; box-shadow: inset 0 0 10px #000; }
-        .spin-btn { background: linear-gradient(to bottom, var(--gold), #b8860b); border: none; padding: 15px 50px; cursor: pointer; font-weight: bold; color: #000; border-radius: 50px; box-shadow: 0 4px 15px rgba(212, 180, 131, 0.4); text-transform: uppercase; }
-        .spin-btn:active { transform: scale(0.95); }
-
-        /* CHARITY BOX */
-        .charity-btn { background: var(--coral); color: white; border: none; padding: 10px 20px; cursor: pointer; font-family: 'Consolas', monospace; border-radius: 4px; margin-top: 15px; }
-        #charity-msg { margin-top: 15px; color: var(--mint); min-height: 20px; font-size: 0.9rem; }
+        .reel { width: 80px; height: 100px; background: #05162b; border-radius: 5px; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; border: 2px solid #111; }
+        .spin-btn { background: var(--gold); border: none; padding: 15px 50px; cursor: pointer; font-weight: bold; border-radius: 50px; text-transform: uppercase; }
 
         /* TICKER */
         .ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; padding: 12px 0; border-top: 2px solid var(--mint); z-index: 1000; }
@@ -63,17 +59,16 @@
 
     <div class="header">
         <div>
-            <h1 style="margin:0; font-size: 1.3rem; letter-spacing: 2px;">MADS_TERMINAL_v9.0</h1>
-            <small style="color: var(--mint);">STATUS: MULTI-MILLIONAIRE | CONNECTION: SECURE</small>
+            <h1 style="margin:0; font-size: 1.3rem; letter-spacing: 2px;">MADS_TERMINAL_v10.0_ALPHA</h1>
+            <small style="color: var(--mint);">DOMINANCE RATIO: OPTIMAL | SIZE_CORRELATION: ENABLED</small>
         </div>
         <div style="text-align: right;">
-            <div style="color: var(--gold); font-size: 1.1rem;">TOTAL ASSETS: $<span id="balance">1000000</span></div>
-            <div style="font-size: 0.6rem; color: var(--dim);">PAPER_ACCOUNT_ACTIVE</div>
+            <div style="color: var(--gold); font-size: 1.1rem;">CORE ASSETS: $<span id="balance">1000000</span></div>
         </div>
     </div>
 
     <div class="tab-container">
-        <div class="tab active" onclick="openTab(event, 'markets')">MARKETS & CIRCLE</div>
+        <div class="tab active" onclick="openTab(event, 'markets')">MARKETS & ASSETS</div>
         <div class="tab" onclick="openTab(event, 'trading')">PRO_TRADER</div>
         <div class="tab" onclick="openTab(event, 'casino')">MADS_CASINO</div>
         <div class="tab" onclick="openTab(event, 'ole')">RONESEN_WATCH</div>
@@ -81,87 +76,91 @@
 
     <div id="markets" class="tab-content active">
         <div class="grid">
-            <div class="card"><div class="ticker-name">OSEBX</div><div class="price">1,245</div><canvas id="c-ose"></canvas></div>
-            <div class="card"><div class="ticker-name">S&P 500</div><div class="price">5,123</div><canvas id="c-spx"></canvas></div>
-            <div class="card"><div class="ticker-name">BITCOIN</div><div class="price">$64,231</div><canvas id="c-btc"></canvas></div>
-            
-            <div class="card" style="border: 1px solid var(--mint);"><div class="ticker-name">Mads Lunde Sørensen</div><div class="price plus">UNLIMITED ↑</div><canvas id="c-mads"></canvas></div>
-            <div class="card"><div class="ticker-name">Magnus Ødegård</div><div class="price plus">+$240K (12%)</div><canvas id="c-magnus"></canvas></div>
-            <div class="card"><div class="ticker-name">Simon Henriksen</div><div class="price plus">Whale Mode</div><canvas id="c-simon"></canvas></div>
-            <div class="card" style="border: 1px solid var(--coral);"><div class="ticker-name">Ole Ronesen</div><div class="price minus">REKT (-99.9%)</div><canvas id="c-ole-fail"></canvas></div>
+            <div class="card" style="border: 2px solid var(--mint); box-shadow: 0 0 15px rgba(118, 199, 192, 0.2);">
+                <div class="ticker-name">Mads Lunde Sørensen</div>
+                <div class="price plus">+$999B (∞)</div>
+                <canvas id="c-mads"></canvas>
+                <div class="size-container">
+                    <div class="size-label">PHYSIOLOGICAL DOMINANCE (P.A.C.)</div>
+                    <div class="size-bar-wrap"><div class="size-bar" style="width: 100%;"></div></div>
+                    <div style="font-size: 0.5rem; color: var(--mint); margin-top: 5px;">STATUS: TOO LARGE FOR SCREEN</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="ticker-name">Magnus Ødegård</div>
+                <div class="price plus">+$240K (12%)</div>
+                <canvas id="c-magnus"></canvas>
+                <div class="size-container">
+                    <div class="size-label">PHYSIOLOGICAL DOMINANCE (P.A.C.)</div>
+                    <div class="size-bar-wrap"><div class="size-bar" style="width: 65%;"></div></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="ticker-name">Simon Henriksen</div>
+                <div class="price plus">Krypto Whale</div>
+                <canvas id="c-simon"></canvas>
+                <div class="size-container">
+                    <div class="size-label">PHYSIOLOGICAL DOMINANCE (P.A.C.)</div>
+                    <div class="size-bar-wrap"><div class="size-bar" style="width: 85%;"></div></div>
+                </div>
+            </div>
+
+            <div class="card" style="border: 1px solid var(--coral);">
+                <div class="ticker-name">Ole Ronesen</div>
+                <div class="price minus">-$1.2M (-99%)</div>
+                <canvas id="c-ole-fail"></canvas>
+                <div class="size-container">
+                    <div class="size-label">PHYSIOLOGICAL DOMINANCE (P.A.C.)</div>
+                    <div class="size-bar-wrap"><div class="size-bar" style="width: 2%;"></div></div>
+                    <div style="font-size: 0.5rem; color: var(--coral); margin-top: 5px;">STATUS: MICROSCOPIC / NOT FOUND</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div id="trading" class="tab-content">
         <div class="card">
-            <h3>ORDER EXECUTION</h3>
+            <h3>EXECUTIVE ORDERS</h3>
+            <p style="font-size: 0.7rem; color: var(--dim);">Trading increases wealth, which increases... everything else.</p>
             <table>
-                <tr><th>ASSET</th><th>PRICE</th><th>QTY</th><th>ACTION</th></tr>
-                <tr><td>EQUINOR</td><td>312.45</td><td><input type="number" id="q-eqnr" class="trade-input" value="10"></td><td><button class="btn-buy" onclick="buy('EQNR', 312)">BUY</button><button class="btn-yolo" onclick="yolo('EQNR', 312)">YOLO</button></td></tr>
-                <tr><td>TESLA</td><td>175.20</td><td><input type="number" id="q-tsla" class="trade-input" value="5"></td><td><button class="btn-buy" onclick="buy('TSLA', 175)">BUY</button><button class="btn-yolo" onclick="yolo('TSLA', 175)">YOLO</button></td></tr>
-                <tr><td>NVIDIA</td><td>892.10</td><td><input type="number" id="q-nvda" class="trade-input" value="1"></td><td><button class="btn-buy" onclick="buy('NVDA', 892)">BUY</button><button class="btn-yolo" onclick="yolo('NVDA', 892)">YOLO</button></td></tr>
+                <tr><td>NVIDIA</td><td><button class="btn-buy" onclick="buy('NVDA', 892)" style="background:var(--mint); border:none; padding:5px; cursor:pointer;">BUY</button></td><td><button onclick="yolo('NVDA', 892)" style="background:var(--purple); border:none; padding:5px; cursor:pointer;">YOLO</button></td></tr>
+                <tr><td>TESLA</td><td><button class="btn-buy" onclick="buy('TSLA', 175)" style="background:var(--mint); border:none; padding:5px; cursor:pointer;">BUY</button></td><td><button onclick="yolo('TSLA', 175)" style="background:var(--purple); border:none; padding:5px; cursor:pointer;">YOLO</button></td></tr>
             </table>
-            <div id="p-list" style="margin-top:20px; font-size: 0.8rem; color: var(--dim);">No active positions.</div>
+            <div id="p-list" style="margin-top:20px;"></div>
         </div>
     </div>
 
     <div id="casino" class="tab-content">
         <div class="card slot-machine">
-            <h2 style="color: var(--gold); letter-spacing: 5px;">🎰 MADS MONEY PRINTER 🎰</h2>
+            <h2 style="color: var(--gold);">🎰 MADS PROFIT ENGINE 🎰</h2>
             <div class="reels">
-                <div class="reel" id="r1">💰</div><div class="reel" id="r2">💰</div><div class="reel" id="r3">💰</div>
+                <div class="reel" id="r1">🔥</div><div class="reel" id="r2">🔥</div><div class="reel" id="r3">🔥</div>
             </div>
-            <button class="spin-btn" onclick="spin()">SPIN FOR PROFIT</button>
-            <div id="s-msg" style="margin-top:20px; font-weight: bold; color: var(--mint);">HOUSE EDGE: -100% (MADS ALWAYS WINS)</div>
+            <button class="spin-btn" onclick="spin()">PRINT MONEY</button>
         </div>
     </div>
 
     <div id="ole" class="tab-content">
-        <div class="card" style="text-align: center; border-color: var(--coral);">
-            <h2 style="color: var(--coral);">RONESEN_DOOM_INDEX</h2>
-            <div id="ole-insult" style="font-size: 1.2rem; margin: 20px 0; color: #ff9999;">"Ole har nettopp prøvd å betale på Kiwi med en utskrift av en NFT..."</div>
-            
-            <div class="card" style="background: rgba(0,0,0,0.4); border: 1px dashed var(--dim);">
-                <h3 style="margin-top:0;">🆘 CHARITY FOR OLE</h3>
-                <p style="font-size: 0.8rem;">Ole har det tøft. Doner noe for å hjelpe ham gjennom dagen.</p>
-                <button class="charity-btn" onclick="donate()">SEND DONASJON</button>
-                <div id="charity-msg"></div>
-            </div>
+        <div class="card" style="text-align: center;">
+            <h2 style="color: var(--coral);">OLE_CHARITY_HUB</h2>
+            <div id="ole-insult" style="margin: 20px 0;">"Ole prøver å mine Bitcoin med en kuleramme..."</div>
+            <button onclick="donate()" style="background:var(--coral); border:none; padding:10px; color:white; cursor:pointer;">SEND DONASJON TIL OLE</button>
+            <div id="charity-msg" style="margin-top:15px; color: var(--mint);"></div>
         </div>
     </div>
 
     <div class="ticker-wrap">
-        <div class="ticker-move" id="ticker-text"></div>
+        <div class="ticker-move">
+            +++ NY FORSKNING BEKREFTER: MADS HAR VERDENS STØRSTE... PORTEFØLJE +++ OLE RONESEN SAKSØKER MARKEDET FOR Å VÆRE 'SLEMT' +++ SIMON HENRIKSEN KJØPER EN ØY MED DOGECOIN +++ MAGNUS ØDEGÅRD FORTSATT SOLID +++ OLES P.A.C. SCORE ER NÅ NEGATIV +++
+        </div>
     </div>
 
     <script>
         let balance = 1000000;
         let portfolio = {};
         
-        const insults = [
-            "Ole solgte Bitcoin på 15k fordi han hørte det skulle til null.",
-            "Ole har installert trading-appen på en mikrobølgeovn.",
-            "Ole tror 'Dividender' er et nytt boyband fra Sør-Korea.",
-            "Oles portefølje er så rød at den kan sees fra verdensrommet.",
-            "Ole ringte banken for å spørre om de tar betalt i 'erfaring'."
-        ];
-
-        const donations = [
-            "en brukt tyggis", "en halvspist kebab", "en 10-kroning (Mads er raus)", 
-            "en utskrift av en graf som går opp", "et par hullete sokker", 
-            "tanker og bønner", "en tom boks med Red Bull", "en bruksanvisning på hvordan man sparer"
-        ];
-
-        const tickerNews = [
-            "MADS LUNDE SØRENSEN HAR OFFISIELT KJØPT OSLO BØRS", "OLE RONESEN HAR BLITT NEKTET ADGANG TIL LOKALE PANTEAUTOMATER",
-            "SIMON HENRIKSEN FLYTTER MILLIARDER I KRYPTO FRA EN KAFE I DUBAI", "MAGNUS ØDEGÅRD LEVERER STABIL VEKST FOR 400. MÅNED PÅ RAD",
-            "NVIDIA-SJEFEN RINGTE MADS FOR Å FÅ RÅD", "OLE RONESEN HAR SOLGT BOLIGEN FOR Å SATSE ALT PÅ RØDT (DET BLE SVART)",
-            "RYKTE: MADS VURDERER Å KJØPE OPP OLE FOR 1 KRONE", "BITCOIN PASSERER $100K I MADS SITT HODE", "KIWI NEKTER OLE INNGANG ETTER NFT-HENDELSEN"
-        ];
-
-        // Init Ticker
-        document.getElementById('ticker-text').innerText = tickerNews.join(" +++ ") + " +++ ";
-
         function openTab(evt, name) {
             let i, content, tabs;
             content = document.getElementsByClassName("tab-content");
@@ -170,56 +169,31 @@
             for (i = 0; i < tabs.length; i++) tabs[i].className = tabs[i].className.replace(" active", "");
             document.getElementById(name).style.display = "block";
             evt.currentTarget.className += " active";
-            if(name === 'ole') document.getElementById('ole-insult').innerText = '"' + insults[Math.floor(Math.random()*insults.length)] + '"';
         }
 
         function donate() {
-            let item = donations[Math.floor(Math.random()*donations.length)];
-            document.getElementById('charity-msg').innerText = "Du donerte " + item + " til Ole. Han ser litt mindre trist ut (tror vi).";
-        }
-
-        function buy(sym, price) {
-            let qty = parseInt(document.getElementById('q-' + sym.toLowerCase()).value);
-            execute(sym, price, qty);
-        }
-
-        function yolo(sym, price) {
-            execute(sym, price, Math.floor(balance/price));
-        }
-
-        function execute(sym, price, qty) {
-            if(qty <= 0) return;
-            let cost = qty * price;
-            if(balance >= cost) {
-                balance -= cost;
-                portfolio[sym] = (portfolio[sym] || 0) + qty;
-                document.getElementById('balance').innerText = balance.toLocaleString();
-                updateP();
-            }
-        }
-
-        function updateP() {
-            document.getElementById('p-list').innerHTML = Object.keys(portfolio).map(s => `<div>> ${s}: ${portfolio[s]} units</div>`).join('');
+            const items = ["en brukt q-tip", "et bilde av Mads sin bankkonto", "en tyggis", "en 10-er", "en klem (verdiløs)"];
+            document.getElementById('charity-msg').innerText = "Du sendte " + items[Math.floor(Math.random()*items.length)] + " til Ole.";
         }
 
         function spin() {
-            const icons = ["💰", "💎", "🚀", "📈", "👑", "🔥"];
-            document.getElementById('s-msg').innerText = "ROLLING...";
             let count = 0;
             let inv = setInterval(() => {
-                document.getElementById('r1').innerText = icons[Math.floor(Math.random()*icons.length)];
-                document.getElementById('r2').innerText = icons[Math.floor(Math.random()*icons.length)];
-                document.getElementById('r3').innerText = icons[Math.floor(Math.random()*icons.length)];
+                const icons = ["💰", "💎", "🚀", "📈"];
+                document.getElementById('r1').innerText = icons[Math.floor(Math.random()*4)];
+                document.getElementById('r2').innerText = icons[Math.floor(Math.random()*4)];
+                document.getElementById('r3').innerText = icons[Math.floor(Math.random()*4)];
                 if(++count > 15) {
                     clearInterval(inv);
-                    let win = icons[Math.floor(Math.random()*icons.length)];
-                    document.getElementById('r1').innerText = win; document.getElementById('r2').innerText = win; document.getElementById('r3').innerText = win;
-                    document.getElementById('s-msg').innerText = "JACKPOT! +$250,000 GENERATED";
-                    balance += 250000;
+                    document.getElementById('r1').innerText = "💎"; document.getElementById('r2').innerText = "💎"; document.getElementById('r3').innerText = "💎";
+                    balance += 500000;
                     document.getElementById('balance').innerText = balance.toLocaleString();
                 }
             }, 70);
         }
+
+        function buy(s, p) { balance -= p; document.getElementById('balance').innerText = balance.toLocaleString(); }
+        function yolo(s, p) { balance = 0; document.getElementById('balance').innerText = "0"; }
 
         function makeChart(id, color, dataIn) {
             const ctx = document.getElementById(id).getContext('2d');
@@ -228,20 +202,17 @@
                 data: {
                     labels: Array(dataIn.length).fill(''),
                     datasets: [{
-                        data: dataIn, borderColor: color, borderWidth: 2, pointRadius: 0, fill: true, backgroundColor: color + '05', tension: 0.4
+                        data: dataIn, borderColor: color, borderWidth: 2, pointRadius: 0, fill: true, backgroundColor: color + '11', tension: 0.4
                     }]
                 },
                 options: { scales: { x: {display:false}, y: {display:false} }, plugins: {legend:{display:false}} }
             });
         }
 
-        makeChart('c-ose', '#76c7c0', [1200, 1210, 1190, 1245]);
-        makeChart('c-spx', '#a29bfe', [5000, 5100, 5050, 5123]);
-        makeChart('c-btc', '#d4b483', [60000, 65000, 62000, 64231]);
-        makeChart('c-mads', '#76c7c0', [1, 10, 100, 1000, 10000]);
-        makeChart('c-magnus', '#76c7c0', [100, 102, 105, 112]);
-        makeChart('c-simon', '#a29bfe', [50, 200, 80, 400]);
-        makeChart('c-ole-fail', '#e57373', [100, 50, 20, 1]);
+        makeChart('c-mads', '#76c7c0', [1, 10, 100, 1000, 5000]);
+        makeChart('c-magnus', '#76c7c0', [100, 105, 110, 120]);
+        makeChart('c-simon', '#a29bfe', [50, 300, 150, 450]);
+        makeChart('c-ole-fail', '#e57373', [100, 40, 10, 1]);
     </script>
 </body>
 </html>
