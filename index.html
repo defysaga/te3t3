@@ -3,171 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MADS | Terminal</title>
+    <title>MADS | Terminal v5.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --dark: #000c1a;
-            --card: #05162b;
-            --text: #cfd8e3;
-            --dim: #708ea8;
-            --mint: #76c7c0;
-            --coral: #e57373;
-            --gold: #d4b483;
+            --dark: #000c1a; --card: #05162b; --text: #cfd8e3; --dim: #708ea8;
+            --mint: #76c7c0; --coral: #e57373; --gold: #d4b483;
         }
 
         body {
-            background-color: var(--dark);
-            color: var(--text);
-            font-family: 'Consolas', 'Monaco', monospace; /* Gir en mer "hacker/terminal" vibe */
-            margin: 0;
-            padding: 20px;
-            padding-bottom: 80px;
+            background-color: var(--dark); color: var(--text);
+            font-family: 'Consolas', monospace; margin: 0; padding: 20px; padding-bottom: 80px;
         }
 
-        .header {
-            max-width: 1100px;
-            margin: 0 auto 10px auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .live-dot {
-            height: 10px; width: 10px;
-            background-color: var(--coral);
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 10px;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
-
+        .header { max-width: 1100px; margin: 0 auto 10px auto; display: flex; justify-content: space-between; align-items: center; }
+        
         /* TABS */
-        .tab-container {
-            max-width: 1100px;
-            margin: 0 auto 25px auto;
-            display: flex;
-            gap: 10px;
-        }
+        .tab-container { max-width: 1100px; margin: 0 auto 25px auto; display: flex; gap: 8px; flex-wrap: wrap; }
+        .tab { padding: 8px 15px; cursor: pointer; color: var(--dim); background: rgba(255,255,255,0.02); border-radius: 4px; font-size: 0.8rem; border: 1px solid transparent; }
+        .tab.active { color: var(--mint); border: 1px solid var(--mint); background: rgba(118, 199, 192, 0.05); }
 
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            color: var(--dim);
-            background: rgba(255,255,255,0.02);
-            border-radius: 5px;
-            font-size: 0.85rem;
-            border: 1px solid transparent;
-        }
-
-        .tab.active {
-            color: var(--mint);
-            border: 1px solid var(--mint);
-            background: rgba(118, 199, 192, 0.05);
-        }
-
-        .tab-content { display: none; max-width: 1100px; margin: 0 auto; animation: slideUp 0.3s ease; }
+        .tab-content { display: none; max-width: 1100px; margin: 0 auto; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* CARDS */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .card { background: var(--card); border-radius: 8px; padding: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .price { font-size: 1.8rem; margin: 10px 0; letter-spacing: -1px; }
 
-        /* FUN FEATURES */
-        .wealth-counter { font-size: 1.2rem; color: var(--gold); }
-        .ole-doom { border: 1px solid var(--coral); background: rgba(229, 115, 115, 0.02); }
+        /* CASINO STYLING */
+        .slot-machine { text-align: center; padding: 20px; background: #001f3f; border-radius: 10px; border: 2px solid var(--gold); }
+        .reels { display: flex; justify-content: center; gap: 15px; font-size: 4rem; margin: 20px 0; }
+        .reel { width: 80px; height: 100px; background: #082a4d; border-radius: 5px; display: flex; align-items: center; justify-content: center; }
+        .spin-btn { background: var(--gold); color: black; border: none; padding: 10px 30px; font-weight: bold; cursor: pointer; border-radius: 5px; }
 
-        .ticker-wrap {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #000; padding: 10px 0; border-top: 1px solid #111;
-        }
-
-        .ticker-move {
-            display: inline-block; white-space: nowrap;
-            animation: ticker 40s linear infinite;
-            color: var(--dim); font-size: 0.8rem;
-        }
+        /* TRADING STYLING */
+        .trade-input { background: #000; border: 1px solid var(--dim); color: var(--mint); padding: 5px; width: 60px; }
+        .buy-btn { background: var(--mint); color: black; border: none; padding: 5px 10px; cursor: pointer; border-radius: 3px; }
 
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; padding: 10px 0; border-top: 1px solid #111; z-index: 100;}
+        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 40s linear infinite; color: var(--dim); font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <div>
-            <h1 style="margin:0; font-size: 1.5rem; letter-spacing: 2px;">MADS_TERMINAL <span style="font-size: 0.7rem; color: var(--mint);">v4.2.0</span></h1>
-            <small style="color: var(--dim);"><span class="live-dot"></span>SYSTEM ONLINE / ENCRYPTED</small>
+            <h1 style="margin:0; font-size: 1.2rem;">MADS_SYSTEMS_v5.0</h1>
+            <small style="color: var(--mint);">SECURE CONNECTION ESTABLISHED</small>
         </div>
-        <div class="wealth-counter">EST. NET WORTH: <span id="wealth-num">$1,240,500</span></div>
+        <div style="color: var(--gold);">BALANCE: $<span id="balance">1000000</span></div>
     </div>
 
     <div class="tab-container">
         <div class="tab active" onclick="openTab(event, 'markets')">MARKETS</div>
-        <div class="tab" onclick="openTab(event, 'casino')">THE CASINO</div>
+        <div class="tab" onclick="openTab(event, 'trading')">PAPER_TRADING</div>
+        <div class="tab" onclick="openTab(event, 'casino')">MADS_CASINO</div>
         <div class="tab" onclick="openTab(event, 'ole')">RONESEN_WATCH</div>
-        <div class="tab" onclick="openTab(event, 'coach')">AI_COACH</div>
     </div>
 
     <div id="markets" class="tab-content active">
         <div class="grid">
             <div class="card">
                 <div style="color: var(--dim);">OSLO BØRS</div>
-                <div class="price">1,245.20</div>
+                <div id="osebx-price" class="price">1245.20</div>
                 <canvas id="chart-osebx"></canvas>
             </div>
             <div class="card">
                 <div style="color: var(--dim);">BITCOIN (BTC)</div>
-                <div class="price">$64,231</div>
+                <div id="btc-price" class="price">$64231</div>
                 <canvas id="chart-btc"></canvas>
             </div>
         </div>
     </div>
 
+    <div id="trading" class="tab-content">
+        <div class="card">
+            <h3>📈 AKTIV HANDEL</h3>
+            <table style="width: 100%; text-align: left; border-collapse: collapse;">
+                <tr style="color: var(--dim); font-size: 0.8rem;">
+                    <th>SYMBOL</th>
+                    <th>PRIS</th>
+                    <th>ANTALL</th>
+                    <th>ACTION</th>
+                </tr>
+                <tr>
+                    <td>OSEBX</td>
+                    <td>1245.20</td>
+                    <td><input type="number" id="buy-qty-ose" class="trade-input" value="1"></td>
+                    <td><button class="buy-btn" onclick="buyStock('OSEBX', 1245.20, 'buy-qty-ose')">KJØP</button></td>
+                </tr>
+                <tr>
+                    <td>BITCOIN</td>
+                    <td>64231</td>
+                    <td><input type="number" id="buy-qty-btc" class="trade-input" value="1"></td>
+                    <td><button class="buy-btn" onclick="buyStock('BTC', 64231, 'buy-qty-btc')">KJØP</button></td>
+                </tr>
+            </table>
+            <div style="margin-top: 20px;">
+                <h4>DIN PORTEFØLJE:</h4>
+                <div id="portfolio-list" style="font-size: 0.9rem; color: var(--mint);">Ingen aksjer ennå.</div>
+            </div>
+        </div>
+    </div>
+
     <div id="casino" class="tab-content">
-        <div class="grid">
-            <div class="card">
-                <div style="color: var(--gold);">KEBAB HOLDING AS</div>
-                <div class="price" style="color: var(--mint);">↑ 420%</div>
-                <small>Mads' største bet. Ryktene sier ny avdeling i Sarpsborg.</small>
+        <div class="card slot-machine">
+            <h2 style="color: var(--gold);">🎰 MADS' GUARANTEED WIN SLOT</h2>
+            <p style="font-size: 0.8rem;">Systemstatus: Rigget til fordel for eieren.</p>
+            <div class="reels">
+                <div class="reel" id="r1">💰</div>
+                <div class="reel" id="r2">💰</div>
+                <div class="reel" id="r3">💰</div>
             </div>
-            <div class="card">
-                <div style="color: var(--gold);">GAMER FUEL CORP</div>
-                <div class="price" style="color: var(--coral);">↓ 12%</div>
-                <small>Høy risiko, ingen profitt, kun koffein.</small>
-            </div>
+            <button class="spin-btn" onclick="spin()">SPINN (GRATIS)</button>
+            <h3 id="slot-msg" style="color: var(--mint); margin-top: 20px;">Trykk for å vinne!</h3>
         </div>
     </div>
 
     <div id="ole" class="tab-content">
-        <div class="card ole-doom">
-            <h2 style="color: var(--coral);">PROFIL: OLE RONESEN</h2>
-            <p>Siste kjente posisjon: Alt på 0.00$</p>
-            <div class="price" style="color: var(--coral);">-98.74%</div>
-            <hr style="border: 0.5px solid rgba(229,115,115,0.2);">
-            <p style="font-size: 0.9rem;">Ole har nå startet et kurs i "hvordan leve på nudler". Begrenset antall plasser.</p>
-        </div>
-    </div>
-
-    <div id="coach" class="tab-content">
-        <div class="card" style="text-align: center;">
-            <h3>🤖 MADS' AI WEALTH COACH</h3>
-            <div id="ai-advice" style="font-style: italic; color: var(--mint); margin: 20px 0;">"Laster neste geniale trekk..."</div>
-            <button onclick="newAdvice()" style="background: var(--mint); border:none; padding: 10px; border-radius: 4px; cursor: pointer;">FÅ RÅD</button>
+        <div class="card" style="border: 1px solid var(--coral); background: rgba(229, 115, 115, 0.02);">
+            <h2 style="color: var(--coral);">RONESEN_DOOM_INDEX</h2>
+            <div style="font-size: 3rem; color: var(--coral);">-98.7%</div>
+            <p>Ole har nettopp prøvd å kjøpe aksjer i et firma som ikke eksisterer.</p>
         </div>
     </div>
 
     <div class="ticker-wrap">
         <div class="ticker-move">
-            +++ MADS TERMINAL: SØKER ETTER ALPHA +++ OLE RONESEN HAR FORBUD MOT Å KJØPE AKSJER +++ KEBAB HOLDING AS MOT MÅNEN +++ BITCOIN ER DET ENESTE SOM GIR MENING +++ 
+            +++ MADS VINNER IGJEN PÅ CASINOET +++ OLE RONESEN HAR BLITT NEKTET ADGANG TIL BØRSEN +++ KEBAB PRISENE STIGER +++ BITCOIN TIL MÅNEN +++
         </div>
     </div>
 
     <script>
+        let balance = 1000000;
+        let portfolio = {};
+
         function openTab(evt, tabName) {
             let i, tabcontent, tablinks;
             tabcontent = document.getElementsByClassName("tab-content");
@@ -178,23 +150,48 @@
             evt.currentTarget.className += " active";
         }
 
-        // Formue-teller som hopper
-        setInterval(() => {
-            let base = 1240500;
-            let random = base + Math.floor(Math.random() * 5000) - 2500;
-            document.getElementById('wealth-num').innerText = "$" + random.toLocaleString();
-        }, 1000);
+        // Trading Logic
+        function buyStock(symbol, price, inputId) {
+            let qty = parseInt(document.getElementById(inputId).value);
+            let cost = qty * price;
+            if(balance >= cost) {
+                balance -= cost;
+                portfolio[symbol] = (portfolio[symbol] || 0) + qty;
+                updateUI();
+                alert(`Du kjøpte ${qty} ${symbol}!`);
+            } else {
+                alert("For lite cash! Prøv å vinn litt på casinoet først.");
+            }
+        }
 
-        // AI Råd
-        const tips = [
-            "Selg alt og kjøp Pokémon-kort.",
-            "Ikke hør på Ole Ronesen.",
-            "Kjøp dippen, uansett hvor dyp den er.",
-            "Invester i deg selv, eller i kebab.",
-            "Husk: 1 BTC = 1 BTC."
-        ];
-        function newAdvice() {
-            document.getElementById('ai-advice').innerText = '"' + tips[Math.floor(Math.random()*tips.length)] + '"';
+        function updateUI() {
+            document.getElementById('balance').innerText = balance.toLocaleString();
+            let list = document.getElementById('portfolio-list');
+            list.innerHTML = Object.keys(portfolio).map(s => `<div>${s}: ${portfolio[s]} stk</div>`).join('');
+        }
+
+        // Casino Logic (Rigged!)
+        const icons = ["💰", "💎", "🚀", "📈", "👑"];
+        function spin() {
+            document.getElementById('slot-msg').innerText = "Spinner...";
+            let count = 0;
+            let interval = setInterval(() => {
+                document.getElementById('r1').innerText = icons[Math.floor(Math.random()*icons.length)];
+                document.getElementById('r2').innerText = icons[Math.floor(Math.random()*icons.length)];
+                document.getElementById('r3').innerText = icons[Math.floor(Math.random()*icons.length)];
+                count++;
+                if(count > 10) {
+                    clearInterval(interval);
+                    // Den "hemmelige" koden som gjør at du alltid vinner:
+                    let winIcon = icons[Math.floor(Math.random()*icons.length)];
+                    document.getElementById('r1').innerText = winIcon;
+                    document.getElementById('r2').innerText = winIcon;
+                    document.getElementById('r3').innerText = winIcon;
+                    document.getElementById('slot-msg').innerText = "JACKPOT! DU VANT IGJEN!";
+                    balance += 50000;
+                    updateUI();
+                }
+            }, 100);
         }
 
         function createChart(id, color, baseValue) {
@@ -213,8 +210,7 @@
             });
         }
         createChart('chart-osebx', '#76c7c0', 1245);
-        createChart('chart-btc', '#d4b483', 64000);
-        newAdvice();
+        createChart('chart-btc', '#d4b483', 64231);
     </script>
 </body>
 </html>
