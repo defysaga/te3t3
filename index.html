@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BI Future Finance | Pro Dashboard</title>
+    <title>BI Future Finance | Ole Ronesen Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -13,6 +13,7 @@
             --danger: #FF4B4B;
             --success: #00E676;
             --gold: #FFD700;
+            --ole-red: #8B0000; /* Darker red for Ole's doom */
         }
 
         body {
@@ -21,7 +22,7 @@
             font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 20px;
-            overflow-x: hidden;
+            padding-bottom: 100px; /* Space for news ticker */
         }
 
         .header {
@@ -55,20 +56,22 @@
             padding: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .card:hover {
+        .card-clickable {
+            cursor: pointer;
+        }
+
+        .card-clickable:hover {
             background: rgba(255, 255, 255, 0.1);
             transform: scale(1.02);
             border-color: var(--accent);
         }
 
-        .ticker-name { font-size: 0.8rem; color: var(--bi-light); font-weight: bold; }
+        .ticker-name { font-size: 0.8rem; color: var(--bi-light); font-weight: bold; text-transform: uppercase; }
         .price { font-size: 1.5rem; font-weight: bold; margin: 5px 0; }
         
-        /* Fear & Greed Meter */
         .market-status {
             background: rgba(0, 0, 0, 0.2);
             border-radius: 15px;
@@ -76,22 +79,66 @@
             text-align: center;
         }
 
-        .meter-bar {
-            height: 10px;
-            background: linear-gradient(90deg, var(--danger), var(--gold), var(--success));
-            border-radius: 5px;
+        /* Ole Ronesen Section Style */
+        .ole-section {
+            grid-column: 1 / -1; /* Spans full width */
+            margin-top: 50px;
+            border: 2px solid var(--ole-red);
+            background: rgba(139, 0, 0, 0.1);
+        }
+
+        .ole-header {
+            color: var(--ole-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .ole-portfolio-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .ole-crash-price {
+            font-size: 3rem;
+            color: var(--danger);
+            font-weight: bold;
+            text-align: center;
             margin: 20px 0;
+            text-shadow: 0 0 10px rgba(255, 75, 75, 0.5);
+        }
+
+        .ole-advice-list {
+            list-style: none;
+            padding: 0;
+            font-size: 0.9rem;
+            color: #ffcccc;
+        }
+
+        .ole-advice-list li {
+            margin-bottom: 10px;
+            padding-left: 20px;
             position: relative;
         }
 
-        .meter-pointer {
-            width: 4px;
-            height: 20px;
-            background: white;
+        .ole-advice-list li::before {
+            content: '❌';
             position: absolute;
-            top: -5px;
-            left: 70%; /* Fiktiv verdi */
-            transition: left 1s ease;
+            left: 0;
+        }
+
+        .finanstilsynet-warn {
+            background: #4a0000;
+            border: 1px solid var(--danger);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--danger);
         }
 
         /* Modal (Pop-up) */
@@ -123,33 +170,23 @@
             color: var(--bi-light);
         }
 
-        .buy-button {
-            display: block;
-            background: var(--accent);
-            color: white;
-            text-align: center;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        /* Nyhetsticker */
+        /* News Ticker */
         .ticker-wrap {
             position: fixed;
             bottom: 0; left: 0;
             width: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.8);
             padding: 10px 0;
             white-space: nowrap;
             overflow: hidden;
+            z-index: 999;
         }
 
         .ticker-move {
             display: inline-block;
             animation: ticker 30s linear infinite;
             color: var(--bi-light);
+            font-weight: bold;
         }
 
         @keyframes ticker {
@@ -160,6 +197,7 @@
         @media (max-width: 768px) {
             .main-container { grid-template-columns: 1fr; }
             .dashboard-grid { grid-template-columns: 1fr; }
+            .ole-portfolio-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -172,117 +210,70 @@
 
     <div class="main-container">
         <div class="dashboard-grid">
-            <div class="card" onclick="openModal('OSEBX', 'Oslo Børs Hovedindeks', 'Nordnet, DNB, Saxo Bank', 'Norsk økonomi er stabil med oljepriser på vei opp.')">
+            <div class="card card-clickable" onclick="openModal('OSEBX', 'Oslo Børs Hovedindeks', 'Nordnet, DNB', 'Markedet venter på inflasjonstall. Stabil oppgang.')">
                 <div class="ticker-name">Oslo Børs</div>
                 <div class="price" id="osebx-p">1,245.20</div>
                 <canvas id="chart-osebx"></canvas>
             </div>
 
-            <div class="card" onclick="openModal('BTC', 'Bitcoin (Digitalt Gull)', 'Firi, Binance, Coinbase', 'Bitcoin konsoliderer før neste halving. Høy volatilitet forventes.')">
+            <div class="card card-clickable" onclick="openModal('BTC', 'Bitcoin', 'Firi, Binance', 'Krypto-markedet viser styrke etter helgens korreksjon.')">
                 <div class="ticker-name">Bitcoin</div>
                 <div class="price" id="btc-p">$64,231</div>
                 <canvas id="chart-btc"></canvas>
-            </div>
-
-            <div class="card" onclick="openModal('CYBER', 'CyberCoin', 'Uniswap, PancakeSwap', 'Fiktiv valuta som brukes i BI sitt spillbaserte læringsmiljø.')">
-                <div class="ticker-name">CyberCoin</div>
-                <div class="price" id="cyber-p">$12.45</div>
-                <canvas id="chart-cyber"></canvas>
-            </div>
-
-            <div class="card" onclick="openModal('FUTURE', 'FutureToken', 'Kraken, Gemini', 'Satsing på AI-basert smart-kontrakt teknologi.')">
-                <div class="ticker-name">FutureToken</div>
-                <div class="price" id="future-p">$0.85</div>
-                <canvas id="chart-future"></canvas>
             </div>
         </div>
 
         <div class="side-panel">
             <div class="market-status card">
                 <h3>Market Sentiment</h3>
-                <div class="meter-bar">
-                    <div class="meter-pointer" id="pointer"></div>
+                <div class="price" style="color: var(--gold); font-size: 2rem;">GREED</div>
+                <p>Investorer tar høy risiko.</p>
+            </div>
+        </div>
+
+        <div class="card ole-section">
+            <div class="ole-header">⚠️ WARNING: OLE RONESEN WEALTH MANAGEMENT (Hall of Shame) ⚠️</div>
+            
+            <div class="ole-portfolio-grid">
+                <div class="card" style="background: rgba(0,0,0,0.3);">
+                    <div class="ticker-name" style="color: var(--ole-red);">Ole's Personlige Portefølje (YTD)</div>
+                    <div class="ole-crash-price">DOWN SINNSYKT MYE <span style="font-size: 1.5rem;">(-98.7%)</span></div>
+                    <canvas id="chart-ole-crash"></canvas>
                 </div>
-                <p id="sentiment-text">GREED</p>
-                <small style="opacity: 0.6;">Basert på volatilitet og volum</small>
+
+                <div class="card" style="background: rgba(0,0,0,0.3);">
+                    <h4 style="color: var(--ole-red);">Oles Siste "Råd" til Klienter</h4>
+                    <ul class="ole-advice-list">
+                        <li>"Selg all Bitcoin på $15k, det skal til null!" (Nov 2022)</li>
+                        <li>"Sats studielånet på luksus-yachter i Dubai."</li>
+                        <li>"Svarte-Petter aksjer er undervurdert, stol på meg."</li>
+                        <li>"Diversifisering er for pyser. Alt på rødt!"</li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="card" style="margin-top: 20px;">
-                <h3 style="color: var(--accent);">Portefølje-tips</h3>
-                <p style="font-size: 0.9rem;">Husk å diversifisere mellom tradisjonell børs og krypto for å balansere risikoen.</p>
+            <div class="dashboard-grid" style="margin-top: 20px;">
+                <div class="card" style="background: rgba(0,0,0,0.3); text-align: center;">
+                    <h4 style="color: var(--bi-light);">Anbefalt Investeringsstrategi</h4>
+                    <div style="font-size: 2rem; color: var(--gold);">Flaxlodd & Håp</div>
+                    <small>Suksessrate: < 0.1%</small>
+                </div>
+                
+                <div class="card" style="background: rgba(0,0,0,0.3); text-align: center;">
+                    <h4 style="color: var(--bi-light);">Kunde-tilfredshet</h4>
+                    <div style="font-size: 2rem; color: var(--danger);">🛑 KATASTROFAL 🛑</div>
+                    <small>Sist oppdatert: Rett før konkursen.</small>
+                </div>
+            </div>
+
+            <div class="finanstilsynet-warn">
+                ADVARSEL FRA FINANSTILSYNET: Ta ALDRI imot finansielle råd fra Ole Ronesen.
             </div>
         </div>
     </div>
 
     <div id="infoModal" class="modal">
         <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h2 id="m-title" style="color: var(--accent);"></h2>
-            <p id="m-desc"></p>
-            <hr style="border-color: rgba(255,255,255,0.1);">
-            <h4>Hvor kan det handles?</h4>
-            <p id="m-trade" style="color: var(--bi-light);"></p>
-            <a href="#" class="buy-button">Gå til handelsplattform</a>
-        </div>
-    </div>
-
-    <div class="ticker-wrap">
-        <div class="ticker-move">
-            +++ BREAKING: Norges Bank vurderer renten +++ BITCOIN PASSERER NY MOTSTAND +++ OSEBX OPP 2% ETTER STERKE TALL FRA EQUINOR +++ CYBERCOIN LISTES PÅ NY BØRS +++ 
-        </div>
-    </div>
-
-    <script>
-        // Modal funksjoner
-        function openModal(symbol, desc, trade, details) {
-            document.getElementById('m-title').innerText = symbol;
-            document.getElementById('m-desc').innerText = details;
-            document.getElementById('m-trade').innerText = trade;
-            document.getElementById('infoModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('infoModal').style.display = 'none';
-        }
-
-        // Graf-funksjon (samme som sist, bare litt penere)
-        function createChart(id, color, baseValue) {
-            const ctx = document.getElementById(id).getContext('2d');
-            return new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array(15).fill(''),
-                    datasets: [{
-                        data: Array.from({length: 15}, () => baseValue + (Math.random()-0.5)*20),
-                        borderColor: color,
-                        borderWidth: 2,
-                        fill: true,
-                        backgroundColor: color + '11',
-                        pointRadius: 0,
-                        tension: 0.4
-                    }]
-                },
-                options: { scales: { x: {display:false}, y: {display:false} }, plugins: {legend:{display:false}} }
-            });
-        }
-
-        const charts = {
-            osebx: createChart('chart-osebx', '#00ADBA', 1200),
-            btc: createChart('chart-btc', '#F7931A', 64000),
-            cyber: createChart('chart-cyber', '#00E676', 12),
-            future: createChart('chart-future', '#BB86FC', 1)
-        };
-
-        // Simuler live bevegelser
-        setInterval(() => {
-            const pointer = document.getElementById('pointer');
-            const randomPos = Math.floor(Math.random() * 90) + 5;
-            pointer.style.left = randomPos + '%';
-            
-            document.getElementById('sentiment-text').innerText = randomPos > 50 ? 'GREED' : 'FEAR';
-        }, 3000);
-    </script>
-</body>
-</html>
+            <span class="close-btn" onclick="closeModal
 </body>
 </html>
