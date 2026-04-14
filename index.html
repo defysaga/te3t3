@@ -3,284 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BI Future Finance | Soft Edition</title>
+    <title>BI Future Finance | Tabs Edition</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bi-dark: #001a35;      /* Mykere mørkeblå */
-            --bi-card: #0a2540;      /* Litt lysere enn bakgrunnen */
-            --bi-text-main: #cfd8e3; /* Myk hvit/grå */
-            --bi-text-dim: #8ba2b9;  /* Dempet blågrå */
-            --accent-soft: #76c7c0;  /* Dempet mint-turkis */
-            --danger-soft: #e57373;  /* Dempet korallrød */
-            --gold-soft: #d4b483;    /* Gammel gull-farge */
+            --bi-dark: #001a35;
+            --bi-card: #0a2540;
+            --bi-text-main: #cfd8e3;
+            --bi-text-dim: #8ba2b9;
+            --accent-soft: #76c7c0;
+            --danger-soft: #e57373;
+            --gold-soft: #d4b483;
         }
 
         body {
             background-color: var(--bi-dark);
             color: var(--bi-text-main);
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
             padding: 20px;
-            line-height: 1.5;
+            padding-bottom: 80px;
         }
 
         .header {
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto 30px auto;
+            max-width: 1000px;
+            margin: 0 auto 20px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            opacity: 0.9;
         }
 
-        .logo { 
-            width: 110px; 
-            filter: grayscale(20%) opacity(0.8); 
+        .logo { width: 100px; filter: opacity(0.7); }
+
+        /* TAB SYSTEM */
+        .tab-container {
+            max-width: 1000px;
+            margin: 0 auto 30px auto;
+            display: flex;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .main-container {
-            max-width: 1100px;
+        .tab {
+            padding: 12px 24px;
+            cursor: pointer;
+            color: var(--bi-text-dim);
+            transition: 0.3s;
+            border-bottom: 2px solid transparent;
+            font-size: 0.9rem;
+        }
+
+        .tab:hover { color: var(--bi-text-main); }
+
+        .tab.active {
+            color: var(--accent-soft);
+            border-bottom: 2px solid var(--accent-soft);
+        }
+
+        .tab-content {
+            display: none;
+            max-width: 1000px;
             margin: 0 auto;
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 24px;
+            animation: fadeIn 0.4s ease;
         }
 
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* CARDS & GRID */
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
         }
 
         .card {
             background: var(--bi-card);
             border-radius: 12px;
-            padding: 24px;
+            padding: 20px;
             border: 1px solid rgba(255, 255, 255, 0.03);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.2s ease-in-out;
         }
 
-        .card-clickable {
-            cursor: pointer;
-        }
+        .price { font-size: 1.5rem; margin: 10px 0; color: var(--bi-text-main); }
+        .ticker-name { font-size: 0.7rem; color: var(--bi-text-dim); text-transform: uppercase; }
 
-        .card-clickable:hover {
-            border-color: rgba(118, 199, 192, 0.3);
-            background: #0d2d4d;
-        }
-
-        .ticker-name { 
-            font-size: 0.75rem; 
-            color: var(--bi-text-dim); 
-            letter-spacing: 1px;
-            text-transform: uppercase; 
-        }
-
-        .price { 
-            font-size: 1.6rem; 
-            font-weight: 500; 
-            margin: 8px 0;
-            color: var(--bi-text-main);
-        }
-
-        /* Ole Ronesen Section - Nå med mindre "skrikende" farger */
-        .ole-section {
-            grid-column: 1 / -1;
-            margin-top: 40px;
+        /* OLE SECTION SPECIFIC */
+        .ole-alert {
             border: 1px solid rgba(229, 115, 115, 0.2);
             background: rgba(229, 115, 115, 0.03);
-        }
-
-        .ole-header {
-            color: var(--danger-soft);
-            font-size: 0.9rem;
             text-align: center;
-            margin-bottom: 20px;
-            letter-spacing: 2px;
-        }
-
-        .ole-portfolio-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 20px;
-        }
-
-        .ole-crash-price {
-            font-size: 2rem;
-            color: var(--danger-soft);
-            margin: 15px 0;
-        }
-
-        .ole-advice-list {
-            list-style: none;
-            padding: 0;
-            font-size: 0.85rem;
-            color: var(--bi-text-dim);
-        }
-
-        .ole-advice-list li {
-            margin-bottom: 8px;
-            padding-left: 25px;
-            position: relative;
-        }
-
-        .ole-advice-list li::before {
-            content: '•';
-            position: absolute;
-            left: 5px;
-            color: var(--danger-soft);
-        }
-
-        /* Modal styling */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 15, 30, 0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: var(--bi-card);
             padding: 40px;
-            border-radius: 16px;
-            max-width: 450px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .ticker-wrap {
             position: fixed;
-            bottom: 0; left: 0;
-            width: 100%;
+            bottom: 0; left: 0; width: 100%;
             background: #000f21;
-            padding: 12px 0;
+            padding: 10px 0;
             border-top: 1px solid rgba(255,255,255,0.05);
         }
 
         .ticker-move {
             display: inline-block;
+            white-space: nowrap;
+            animation: ticker 50s linear infinite;
             color: var(--bi-text-dim);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         @keyframes ticker {
             0% { transform: translateX(100%); }
             100% { transform: translateX(-100%); }
         }
-
-        canvas {
-            filter: saturate(80%); /* Gjør grafene mindre fargesterke */
-        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1 style="font-size: 1.2rem; font-weight: 400; color: var(--bi-text-dim);">BI ANALYTICS <span style="color: var(--accent-soft);">•</span></h1>
+        <h1 style="font-size: 1rem; letter-spacing: 1px;">BI TERMINAL</h1>
         <img src="https://www.bi.no/globalassets/images/logo/bi_logo_white.png" alt="Logo" class="logo">
     </div>
 
-    <div class="main-container">
+    <div class="tab-container">
+        <div class="tab active" onclick="openTab(event, 'marked')">Markedsoversikt</div>
+        <div class="tab" onclick="openTab(event, 'analyse')">Portefølje-analyse</div>
+        <div class="tab" onclick="openTab(event, 'ole')">Ole Ronesen Spesial</div>
+    </div>
+
+    <div id="marked" class="tab-content active">
         <div class="dashboard-grid">
-            <div class="card card-clickable" onclick="openModal('OSEBX', 'Hovedindeksen', 'Nordnet', 'Markedet er rolig.')">
-                <div class="ticker-name">Oslo Børs</div>
-                <div class="price">1,245.20</div>
-                <canvas id="chart-osebx" height="100"></canvas>
-            </div>
-
-            <div class="card card-clickable" onclick="openModal('BTC', 'Bitcoin', 'Firi', 'Digital verdiutvikling.')">
-                <div class="ticker-name">Bitcoin</div>
-                <div class="price">$64,231</div>
-                <canvas id="chart-btc" height="100"></canvas>
-            </div>
-        </div>
-
-        <div class="side-panel">
             <div class="card">
-                <h3 style="font-size: 1rem; color: var(--bi-text-dim);">Markedsfokus</h3>
-                <div style="font-size: 1.4rem; color: var(--gold-soft);">Nøytral</div>
-                <p style="font-size: 0.85rem; color: var(--bi-text-dim);">Venter på signaler fra sentralbanken.</p>
+                <div class="ticker-name">Oslo Børs (OSEBX)</div>
+                <div class="price">1,245.20</div>
+                <canvas id="chart-osebx"></canvas>
             </div>
-        </div>
-
-        <div class="card ole-section">
-            <div class="ole-header">OBSERVASJON: OLE RONESEN WEALTH</div>
-            
-            <div class="ole-portfolio-grid">
-                <div class="card" style="background: rgba(0,0,0,0.15); border: none;">
-                    <div class="ticker-name">Oles Portefølje</div>
-                    <div class="ole-crash-price">-98.7%</div>
-                    <canvas id="chart-ole-crash" height="80"></canvas>
-                </div>
-
-                <div class="card" style="background: rgba(0,0,0,0.15); border: none;">
-                    <h4 style="margin-top:0; font-size: 0.9rem;">Oles Hypoteser</h4>
-                    <ul class="ole-advice-list">
-                        <li>Kjøper alltid på "all-time high".</li>
-                        <li>Tror tap er en form for sparing.</li>
-                        <li>Sover under styringsmøter.</li>
-                    </ul>
-                </div>
+            <div class="card">
+                <div class="ticker-name">Bitcoin (BTC)</div>
+                <div class="price">$64,231</div>
+                <canvas id="chart-btc"></canvas>
+            </div>
+            <div class="card">
+                <div class="ticker-name">Ethereum (ETH)</div>
+                <div class="price">$3,450</div>
+                <canvas id="chart-eth"></canvas>
             </div>
         </div>
     </div>
 
-    <div id="infoModal" class="modal">
-        <div class="modal-content">
-            <h2 id="m-title" style="color: var(--accent-soft); font-weight: 400;"></h2>
-            <p id="m-desc" style="color: var(--bi-text-dim);"></p>
-            <button onclick="closeModal()" style="background:none; border: 1px solid var(--bi-text-dim); color: var(--bi-text-dim); padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-top: 20px;">Lukk</button>
+    <div id="analyse" class="tab-content">
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Markedssentiment</h3>
+                <p style="color: var(--gold-soft);">Nøytral / Avventende</p>
+                <small style="color: var(--bi-text-dim);">Volatiliteten er lav før kveldens rentemøte i USA.</small>
+            </div>
+            <div class="card">
+                <h3>Sektoranalyse</h3>
+                <p>Energi: <span style="color: var(--accent-soft);">↑ 1.2%</span></p>
+                <p>Teknologi: <span style="color: var(--danger-soft);">↓ 0.5%</span></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="ole" class="tab-content">
+        <div class="card ole-alert">
+            <h2 style="color: var(--danger-soft); font-weight: 400;">Rapport: Ole Ronesen Management</h2>
+            <div style="font-size: 3rem; margin: 20px 0; color: var(--danger-soft);">-98.7%</div>
+            <p style="color: var(--bi-text-dim);">"Porteføljen lider under Oles revolusjonerende strategi: Kjøp dyrt, selg billig."</p>
+            
+            <div class="dashboard-grid" style="margin-top: 30px; text-align: left;">
+                <div class="card" style="background: rgba(0,0,0,0.1);">
+                    <h4 style="margin-top:0;">Oles Strategi</h4>
+                    <p style="font-size: 0.85rem;">• Satse alt på én enkelt meme-coin.<br>• Ignorere stop-loss.<br>• Slette appen når det går ned.</p>
+                </div>
+                <div class="card" style="background: rgba(0,0,0,0.1);">
+                    <h4 style="margin-top:0;">Status</h4>
+                    <p style="color: var(--danger-soft);">⚠️ Teknisk Konkurs</p>
+                    <small>Ole hevder selv at dette er en "long-term play".</small>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="ticker-wrap">
-        <div class="ticker-move" style="animation: ticker 40s linear infinite;">
-            +++ OLE RONESEN: "Det er bare et midlertidig tap på 98%" +++ MARKEDET AVVENTER +++ BI STUDENT-DASHBOARD LIVE +++
+        <div class="ticker-move">
+            +++ MARKEDSUPPDATERING: OSEBX STABIL +++ OLE RONESEN NEKTER Å KOMMENTERE TAPENE +++ BITCOIN HOLDER STØ KURS +++ NYHET: BI STUDENTER VISER STERKERE ANALYSER ENN OLE +++
         </div>
     </div>
 
     <script>
-        function openModal(symbol, desc, trade, details) {
-            document.getElementById('m-title').innerText = symbol;
-            document.getElementById('m-desc').innerText = details;
-            document.getElementById('infoModal').style.display = 'flex';
+        function openTab(evt, tabName) {
+            let i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
         }
-        function closeModal() { document.getElementById('infoModal').style.display = 'none'; }
 
-        function createChart(id, color, baseValue, isCrash = false) {
+        function createChart(id, color, baseValue) {
             const ctx = document.getElementById(id).getContext('2d');
-            let dataPoints = isCrash ? [100, 80, 85, 40, 30, 10, 5, 2, 1] : Array.from({length: 12}, () => baseValue + (Math.random()-0.5)*15);
-
             return new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Array(dataPoints.length).fill(''),
+                    labels: Array(12).fill(''),
                     datasets: [{
-                        data: dataPoints,
+                        data: Array.from({length: 12}, () => baseValue + (Math.random()-0.5)*20),
                         borderColor: color,
                         borderWidth: 1.5,
                         fill: true,
-                        backgroundColor: color + '08',
+                        backgroundColor: color + '05',
                         pointRadius: 0,
-                        tension: 0.3
+                        tension: 0.4
                     }]
                 },
-                options: { 
-                    responsive: true,
-                    scales: { x: {display:false}, y: {display:false} }, 
-                    plugins: {legend:{display:false}}
-                }
+                options: { scales: { x: {display:false}, y: {display:false} }, plugins: {legend:{display:false}} }
             });
         }
 
         createChart('chart-osebx', '#76c7c0', 1200);
         createChart('chart-btc', '#d4b483', 64000);
-        createChart('chart-ole-crash', '#e57373', 100, true);
+        createChart('chart-eth', '#8ba2b9', 3400);
     </script>
 </body>
 </html>
