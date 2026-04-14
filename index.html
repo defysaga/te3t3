@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MADS | TERMINAL v8.0</title>
+    <title>MADS | TERMINAL v9.0</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -14,6 +14,7 @@
         body {
             background-color: var(--dark); color: var(--text);
             font-family: 'Consolas', monospace; margin: 0; padding: 20px; padding-bottom: 100px;
+            overflow-x: hidden;
         }
 
         .header { max-width: 1200px; margin: 0 auto 10px auto; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding-bottom: 10px; }
@@ -21,7 +22,6 @@
         .tab-container { max-width: 1200px; margin: 0 auto 25px auto; display: flex; gap: 8px; flex-wrap: wrap; }
         .tab { padding: 8px 15px; cursor: pointer; color: var(--dim); background: rgba(255,255,255,0.02); border-radius: 4px; font-size: 0.8rem; border: 1px solid transparent; transition: 0.2s; }
         .tab.active { color: var(--mint); border: 1px solid var(--mint); background: rgba(118, 199, 192, 0.05); }
-        .tab:hover { background: rgba(255,255,255,0.05); }
 
         .tab-content { display: none; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.3s ease; }
         .tab-content.active { display: block; }
@@ -36,23 +36,26 @@
         .plus { color: var(--mint); }
         .minus { color: var(--coral); }
 
-        /* TRADING SYSTEM */
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; color: var(--dim); font-size: 0.7rem; padding-bottom: 10px; }
-        td { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.02); }
+        /* TRADING */
+        table { width: 100%; border-collapse: collapse; }
         .trade-input { background: #000; border: 1px solid #222; color: var(--mint); padding: 5px; width: 50px; border-radius: 3px; }
         .btn-buy { background: var(--mint); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 3px; }
         .btn-yolo { background: var(--purple); color: #000; border: none; padding: 5px 10px; cursor: pointer; font-size: 0.7rem; font-weight: bold; border-radius: 3px; margin-left: 5px; }
 
-        /* CASINO */
-        .slot-machine { text-align: center; border: 2px solid var(--gold); background: #001529; }
+        /* CASINO EXTREME */
+        .slot-machine { text-align: center; border: 2px solid var(--gold); background: radial-gradient(circle, #001529 0%, #000c1a 100%); position: relative; overflow: hidden; }
         .reels { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .reel { width: 70px; height: 90px; background: #05162b; border-radius: 5px; font-size: 3rem; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); }
-        .spin-btn { background: var(--gold); border: none; padding: 10px 40px; cursor: pointer; font-weight: bold; color: #000;}
+        .reel { width: 80px; height: 100px; background: #05162b; border-radius: 5px; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; border: 2px solid #111; box-shadow: inset 0 0 10px #000; }
+        .spin-btn { background: linear-gradient(to bottom, var(--gold), #b8860b); border: none; padding: 15px 50px; cursor: pointer; font-weight: bold; color: #000; border-radius: 50px; box-shadow: 0 4px 15px rgba(212, 180, 131, 0.4); text-transform: uppercase; }
+        .spin-btn:active { transform: scale(0.95); }
+
+        /* CHARITY BOX */
+        .charity-btn { background: var(--coral); color: white; border: none; padding: 10px 20px; cursor: pointer; font-family: 'Consolas', monospace; border-radius: 4px; margin-top: 15px; }
+        #charity-msg { margin-top: 15px; color: var(--mint); min-height: 20px; font-size: 0.9rem; }
 
         /* TICKER */
         .ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; padding: 12px 0; border-top: 2px solid var(--mint); z-index: 1000; }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 60s linear infinite; color: var(--mint); font-size: 0.85rem; font-weight: bold; }
+        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 80s linear infinite; color: var(--mint); font-size: 0.85rem; font-weight: bold; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
     </style>
 </head>
@@ -60,19 +63,19 @@
 
     <div class="header">
         <div>
-            <h1 style="margin:0; font-size: 1.3rem; letter-spacing: 2px;">MADS_TERMINAL_v8</h1>
-            <small style="color: var(--mint);">SECURE CORE ACCESS: GRANTED</small>
+            <h1 style="margin:0; font-size: 1.3rem; letter-spacing: 2px;">MADS_TERMINAL_v9.0</h1>
+            <small style="color: var(--mint);">STATUS: MULTI-MILLIONAIRE | CONNECTION: SECURE</small>
         </div>
         <div style="text-align: right;">
-            <div style="color: var(--gold); font-size: 1.1rem;">CORE BALANCE: $<span id="balance">1000000</span></div>
-            <div style="font-size: 0.6rem; color: var(--dim);">PAPER_TRADING_ENGINE_v8</div>
+            <div style="color: var(--gold); font-size: 1.1rem;">TOTAL ASSETS: $<span id="balance">1000000</span></div>
+            <div style="font-size: 0.6rem; color: var(--dim);">PAPER_ACCOUNT_ACTIVE</div>
         </div>
     </div>
 
     <div class="tab-container">
         <div class="tab active" onclick="openTab(event, 'markets')">MARKETS & CIRCLE</div>
         <div class="tab" onclick="openTab(event, 'trading')">PRO_TRADER</div>
-        <div class="tab" onclick="openTab(event, 'casino')">CASINO_RIG</div>
+        <div class="tab" onclick="openTab(event, 'casino')">MADS_CASINO</div>
         <div class="tab" onclick="openTab(event, 'ole')">RONESEN_WATCH</div>
     </div>
 
@@ -82,80 +85,82 @@
             <div class="card"><div class="ticker-name">S&P 500</div><div class="price">5,123</div><canvas id="c-spx"></canvas></div>
             <div class="card"><div class="ticker-name">BITCOIN</div><div class="price">$64,231</div><canvas id="c-btc"></canvas></div>
             
-            <div class="card" style="border: 1px solid var(--mint); box-shadow: 0 0 10px rgba(118, 199, 192, 0.3);">
-                <div class="ticker-name">Mads Lunde Sørensen</div>
-                <div class="price plus">↑↑↑ (BEYOND)</div>
-                <canvas id="c-mads"></canvas>
-            </div>
-            <div class="card">
-                <div class="ticker-name">Magnus Ødegård</div>
-                <div class="price plus">+$240K (12%)</div>
-                <canvas id="c-magnus"></canvas>
-            </div>
-            <div class="card">
-                <div class="ticker-name">Simon Henriksen</div>
-                <div class="price plus">Crypto Whale</div>
-                <canvas id="c-simon"></canvas>
-            </div>
-            <div class="card" style="border: 1px solid var(--coral); box-shadow: 0 0 10px rgba(229, 115, 115, 0.3);">
-                <div class="ticker-name">Ole Ronesen</div>
-                <div class="price minus">↓↓↓ (-99.9%)</div>
-                <canvas id="c-ole-fail"></canvas>
-            </div>
+            <div class="card" style="border: 1px solid var(--mint);"><div class="ticker-name">Mads Lunde Sørensen</div><div class="price plus">UNLIMITED ↑</div><canvas id="c-mads"></canvas></div>
+            <div class="card"><div class="ticker-name">Magnus Ødegård</div><div class="price plus">+$240K (12%)</div><canvas id="c-magnus"></canvas></div>
+            <div class="card"><div class="ticker-name">Simon Henriksen</div><div class="price plus">Whale Mode</div><canvas id="c-simon"></canvas></div>
+            <div class="card" style="border: 1px solid var(--coral);"><div class="ticker-name">Ole Ronesen</div><div class="price minus">REKT (-99.9%)</div><canvas id="c-ole-fail"></canvas></div>
         </div>
     </div>
 
     <div id="trading" class="tab-content">
         <div class="card">
-            <h3>INSTANT EXECUTION TERMINAL</h3>
+            <h3>ORDER EXECUTION</h3>
             <table>
-                <tr><th>ASSET</th><th>LIVE PRICE</th><th>QTY</th><th>EXECUTE</th></tr>
-                <tr><td>EQUINOR (EQNR)</td><td>312.45</td><td><input type="number" id="q-eqnr" class="trade-input" value="10"></td><td><button class="btn-buy" onclick="buy('EQNR', 312)">MARKET</button><button class="btn-yolo" onclick="yolo('EQNR', 312)">YOLO</button></td></tr>
-                <tr><td>TESLA (TSLA)</td><td>175.20</td><td><input type="number" id="q-tsla" class="trade-input" value="5"></td><td><button class="btn-buy" onclick="buy('TSLA', 175)">MARKET</button><button class="btn-yolo" onclick="yolo('TSLA', 175)">YOLO</button></td></tr>
-                <tr><td>NVIDIA (NVDA)</td><td>892.10</td><td><input type="number" id="q-nvda" class="trade-input" value="1"></td><td><button class="btn-buy" onclick="buy('NVDA', 892)">MARKET</button><button class="btn-yolo" onclick="yolo('NVDA', 892)">YOLO</button></td></tr>
-                <tr><td>BITCOIN (BTC)</td><td>64231</td><td><input type="number" id="q-btc" class="trade-input" value="1"></td><td><button class="btn-buy" onclick="buy('BTC', 64231)">MARKET</button><button class="btn-yolo" onclick="yolo('BTC', 64231)">YOLO</button></td></tr>
+                <tr><th>ASSET</th><th>PRICE</th><th>QTY</th><th>ACTION</th></tr>
+                <tr><td>EQUINOR</td><td>312.45</td><td><input type="number" id="q-eqnr" class="trade-input" value="10"></td><td><button class="btn-buy" onclick="buy('EQNR', 312)">BUY</button><button class="btn-yolo" onclick="yolo('EQNR', 312)">YOLO</button></td></tr>
+                <tr><td>TESLA</td><td>175.20</td><td><input type="number" id="q-tsla" class="trade-input" value="5"></td><td><button class="btn-buy" onclick="buy('TSLA', 175)">BUY</button><button class="btn-yolo" onclick="yolo('TSLA', 175)">YOLO</button></td></tr>
+                <tr><td>NVIDIA</td><td>892.10</td><td><input type="number" id="q-nvda" class="trade-input" value="1"></td><td><button class="btn-buy" onclick="buy('NVDA', 892)">BUY</button><button class="btn-yolo" onclick="yolo('NVDA', 892)">YOLO</button></td></tr>
             </table>
-            <div style="margin-top:20px;">
-                <h4 style="color: var(--mint);">LIVE PORTFOLIO:</h4>
-                <div id="p-list" style="font-size: 0.8rem;">Ready for orders...</div>
-            </div>
+            <div id="p-list" style="margin-top:20px; font-size: 0.8rem; color: var(--dim);">No active positions.</div>
         </div>
     </div>
 
     <div id="casino" class="tab-content">
         <div class="card slot-machine">
-            <h2 style="color: var(--gold);">🎰 MADS' MONEY PRINTER (Rigged)</h2>
+            <h2 style="color: var(--gold); letter-spacing: 5px;">🎰 MADS MONEY PRINTER 🎰</h2>
             <div class="reels">
                 <div class="reel" id="r1">💰</div><div class="reel" id="r2">💰</div><div class="reel" id="r3">💰</div>
             </div>
-            <button class="spin-btn" onclick="spin()">PULL LEVER</button>
-            <p id="s-msg" style="margin-top:15px; color: var(--mint);">WIN PROBABILITY: 100%</p>
+            <button class="spin-btn" onclick="spin()">SPIN FOR PROFIT</button>
+            <div id="s-msg" style="margin-top:20px; font-weight: bold; color: var(--mint);">HOUSE EDGE: -100% (MADS ALWAYS WINS)</div>
         </div>
     </div>
 
     <div id="ole" class="tab-content">
-        <div class="card" style="border-color: var(--coral); text-align: center;">
-            <h2 style="color: var(--coral);">⚠️ RONESEN_DOOM_INDEX</h2>
-            <div id="ole-insult" style="font-size: 1.5rem; margin: 30px 0; min-height: 80px; color: #ff9999;">Laster Oles siste tabbe...</div>
+        <div class="card" style="text-align: center; border-color: var(--coral);">
+            <h2 style="color: var(--coral);">RONESEN_DOOM_INDEX</h2>
+            <div id="ole-insult" style="font-size: 1.2rem; margin: 20px 0; color: #ff9999;">"Ole har nettopp prøvd å betale på Kiwi med en utskrift av en NFT..."</div>
+            
+            <div class="card" style="background: rgba(0,0,0,0.4); border: 1px dashed var(--dim);">
+                <h3 style="margin-top:0;">🆘 CHARITY FOR OLE</h3>
+                <p style="font-size: 0.8rem;">Ole har det tøft. Doner noe for å hjelpe ham gjennom dagen.</p>
+                <button class="charity-btn" onclick="donate()">SEND DONASJON</button>
+                <div id="charity-msg"></div>
+            </div>
         </div>
     </div>
 
     <div class="ticker-wrap">
-        <div class="ticker-move">
-            +++ MADS LUNDE SØRENSEN HAR OFFISIELT MER CASH ENN DET FINNES I OMLØP +++ OLE RONESEN OBSERVERT MENS HAN PANTET FLASKER FOR Å KJØPE SHIBA INU +++ SIMON HENRIKSEN FLYTTER MILLIARDER I KRYPTO +++ NVIDIA TIL MÅNEN +++ OLE RONESEN HAR FORBUD MOT Å KJØPE AKSJER +++ KEBAB HOLDING AS MOT MÅNEN +++ 
-        </div>
+        <div class="ticker-move" id="ticker-text"></div>
     </div>
 
     <script>
         let balance = 1000000;
         let portfolio = {};
-        const oleInsults = [
-            "Ole har nettopp solgt på bunnen. Igjen.",
-            "Ole prøvde å daytrade med Internet Explorer. Han ligger 4 dager bak markedet.",
-            "Ole spurte ChatGPT om investeringsråd og fikk svaret: 'Vennligst ikke gjør noe, Ole.'",
-            "Oles portefølje er nå så rød at den kan brukes som nødlys på Gardermoen.",
-            "Ole ringte banken for å spørre om lån til 'en helt sikker ting'. Han ble avbrutt av latter."
+        
+        const insults = [
+            "Ole solgte Bitcoin på 15k fordi han hørte det skulle til null.",
+            "Ole har installert trading-appen på en mikrobølgeovn.",
+            "Ole tror 'Dividender' er et nytt boyband fra Sør-Korea.",
+            "Oles portefølje er så rød at den kan sees fra verdensrommet.",
+            "Ole ringte banken for å spørre om de tar betalt i 'erfaring'."
         ];
+
+        const donations = [
+            "en brukt tyggis", "en halvspist kebab", "en 10-kroning (Mads er raus)", 
+            "en utskrift av en graf som går opp", "et par hullete sokker", 
+            "tanker og bønner", "en tom boks med Red Bull", "en bruksanvisning på hvordan man sparer"
+        ];
+
+        const tickerNews = [
+            "MADS LUNDE SØRENSEN HAR OFFISIELT KJØPT OSLO BØRS", "OLE RONESEN HAR BLITT NEKTET ADGANG TIL LOKALE PANTEAUTOMATER",
+            "SIMON HENRIKSEN FLYTTER MILLIARDER I KRYPTO FRA EN KAFE I DUBAI", "MAGNUS ØDEGÅRD LEVERER STABIL VEKST FOR 400. MÅNED PÅ RAD",
+            "NVIDIA-SJEFEN RINGTE MADS FOR Å FÅ RÅD", "OLE RONESEN HAR SOLGT BOLIGEN FOR Å SATSE ALT PÅ RØDT (DET BLE SVART)",
+            "RYKTE: MADS VURDERER Å KJØPE OPP OLE FOR 1 KRONE", "BITCOIN PASSERER $100K I MADS SITT HODE", "KIWI NEKTER OLE INNGANG ETTER NFT-HENDELSEN"
+        ];
+
+        // Init Ticker
+        document.getElementById('ticker-text').innerText = tickerNews.join(" +++ ") + " +++ ";
 
         function openTab(evt, name) {
             let i, content, tabs;
@@ -165,7 +170,12 @@
             for (i = 0; i < tabs.length; i++) tabs[i].className = tabs[i].className.replace(" active", "");
             document.getElementById(name).style.display = "block";
             evt.currentTarget.className += " active";
-            if(name === 'ole') document.getElementById('ole-insult').innerText = '"' + oleInsults[Math.floor(Math.random()*oleInsults.length)] + '"';
+            if(name === 'ole') document.getElementById('ole-insult').innerText = '"' + insults[Math.floor(Math.random()*insults.length)] + '"';
+        }
+
+        function donate() {
+            let item = donations[Math.floor(Math.random()*donations.length)];
+            document.getElementById('charity-msg').innerText = "Du donerte " + item + " til Ole. Han ser litt mindre trist ut (tror vi).";
         }
 
         function buy(sym, price) {
@@ -174,67 +184,64 @@
         }
 
         function yolo(sym, price) {
-            let qty = Math.floor(balance / price);
-            if(qty > 0) execute(sym, price, qty);
-            else alert("Du er blakk, Mads! Spinn på casinoet.");
+            execute(sym, price, Math.floor(balance/price));
         }
 
         function execute(sym, price, qty) {
+            if(qty <= 0) return;
             let cost = qty * price;
             if(balance >= cost) {
                 balance -= cost;
                 portfolio[sym] = (portfolio[sym] || 0) + qty;
                 document.getElementById('balance').innerText = balance.toLocaleString();
-                updatePortfolio();
+                updateP();
             }
         }
 
-        function updatePortfolio() {
-            let html = Object.keys(portfolio).map(s => `<div>> ${s}: ${portfolio[s]} units (LOCKED)</div>`).join('');
-            document.getElementById('p-list').innerHTML = html || "Waiting for orders...";
+        function updateP() {
+            document.getElementById('p-list').innerHTML = Object.keys(portfolio).map(s => `<div>> ${s}: ${portfolio[s]} units</div>`).join('');
         }
 
         function spin() {
-            const icons = ["💰", "💎", "🚀", "📈"];
-            document.getElementById('s-msg').innerText = "CALCULATING WIN...";
+            const icons = ["💰", "💎", "🚀", "📈", "👑", "🔥"];
+            document.getElementById('s-msg').innerText = "ROLLING...";
             let count = 0;
             let inv = setInterval(() => {
-                document.getElementById('r1').innerText = icons[Math.floor(Math.random()*4)];
-                document.getElementById('r2').innerText = icons[Math.floor(Math.random()*4)];
-                document.getElementById('r3').innerText = icons[Math.floor(Math.random()*4)];
+                document.getElementById('r1').innerText = icons[Math.floor(Math.random()*icons.length)];
+                document.getElementById('r2').innerText = icons[Math.floor(Math.random()*icons.length)];
+                document.getElementById('r3').innerText = icons[Math.floor(Math.random()*icons.length)];
                 if(++count > 15) {
                     clearInterval(inv);
-                    let win = icons[Math.floor(Math.random()*4)];
+                    let win = icons[Math.floor(Math.random()*icons.length)];
                     document.getElementById('r1').innerText = win; document.getElementById('r2').innerText = win; document.getElementById('r3').innerText = win;
-                    document.getElementById('s-msg').innerText = "JACKPOT! +$100,000 ADDED TO CORE";
-                    balance += 100000;
+                    document.getElementById('s-msg').innerText = "JACKPOT! +$250,000 GENERATED";
+                    balance += 250000;
                     document.getElementById('balance').innerText = balance.toLocaleString();
                 }
-            }, 80);
+            }, 70);
         }
 
-        function makeChart(id, color, base, dataIn) {
+        function makeChart(id, color, dataIn) {
             const ctx = document.getElementById(id).getContext('2d');
-            let data = dataIn || Array.from({length: 20}, () => base + (Math.random()-0.5)*(base*0.05));
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Array(data.length).fill(''),
+                    labels: Array(dataIn.length).fill(''),
                     datasets: [{
-                        data: data, borderColor: color, borderWidth: 1.5, pointRadius: 0, fill: true, backgroundColor: color + '05', tension: 0.4
+                        data: dataIn, borderColor: color, borderWidth: 2, pointRadius: 0, fill: true, backgroundColor: color + '05', tension: 0.4
                     }]
                 },
                 options: { scales: { x: {display:false}, y: {display:false} }, plugins: {legend:{display:false}} }
             });
         }
 
-        makeChart('c-ose', '#76c7c0', 1245);
-        makeChart('c-spx', '#a29bfe', 5123);
-        makeChart('c-btc', '#d4b483', 64231);
-        makeChart('c-mads', '#76c7c0', 0, [10, 50, 200, 800, 1500, 5000]); // Mads: Extreme growth
-        makeChart('c-magnus', '#76c7c0', 115); // Magnus: Stable growth
-        makeChart('c-simon', '#a29bfe', 0, [50, 300, 100, 600, 400, 1200]); // Simon: Volatile growth
-        makeChart('c-ole-fail', '#e57373', 0, [1000, 800, 400, 100, 20, 1]); // Ole: Crash
+        makeChart('c-ose', '#76c7c0', [1200, 1210, 1190, 1245]);
+        makeChart('c-spx', '#a29bfe', [5000, 5100, 5050, 5123]);
+        makeChart('c-btc', '#d4b483', [60000, 65000, 62000, 64231]);
+        makeChart('c-mads', '#76c7c0', [1, 10, 100, 1000, 10000]);
+        makeChart('c-magnus', '#76c7c0', [100, 102, 105, 112]);
+        makeChart('c-simon', '#a29bfe', [50, 200, 80, 400]);
+        makeChart('c-ole-fail', '#e57373', [100, 50, 20, 1]);
     </script>
 </body>
 </html>
