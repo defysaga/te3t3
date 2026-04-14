@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BI Future Finance | Dashboard</title>
+    <title>BI Future Finance | Pro Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
@@ -12,40 +12,41 @@
             --accent: #00ADBA;
             --danger: #FF4B4B;
             --success: #00E676;
+            --gold: #FFD700;
         }
 
         body {
             background-color: var(--bi-blue);
             color: white;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            overflow-x: hidden;
         }
 
-        /* Logo-plassering øverst i hjørnet */
         .header {
             width: 100%;
             max-width: 1200px;
+            margin: 0 auto 30px auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
         }
 
-        .logo {
-            width: 120px;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.2));
+        .logo { width: 120px; }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
         }
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(2, 1fr);
             gap: 20px;
-            width: 100%;
-            max-width: 1200px;
         }
 
         .card {
@@ -54,149 +55,234 @@
             padding: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            transition: transform 0.3s ease;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .card:hover {
-            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
             border-color: var(--accent);
         }
 
-        .ticker-name {
-            font-size: 0.9rem;
+        .ticker-name { font-size: 0.8rem; color: var(--bi-light); font-weight: bold; }
+        .price { font-size: 1.5rem; font-weight: bold; margin: 5px 0; }
+        
+        /* Fear & Greed Meter */
+        .market-status {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .meter-bar {
+            height: 10px;
+            background: linear-gradient(90deg, var(--danger), var(--gold), var(--success));
+            border-radius: 5px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .meter-pointer {
+            width: 4px;
+            height: 20px;
+            background: white;
+            position: absolute;
+            top: -5px;
+            left: 70%; /* Fiktiv verdi */
+            transition: left 1s ease;
+        }
+
+        /* Modal (Pop-up) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 36, 78, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #0b2e59;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid var(--accent);
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px; right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
             color: var(--bi-light);
-            text-transform: uppercase;
+        }
+
+        .buy-button {
+            display: block;
+            background: var(--accent);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 10px;
+            text-decoration: none;
             font-weight: bold;
         }
 
-        .price {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin: 10px 0;
+        /* Nyhetsticker */
+        .ticker-wrap {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            padding: 10px 0;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
-        .delta {
-            font-size: 0.9rem;
-            font-weight: bold;
+        .ticker-move {
+            display: inline-block;
+            animation: ticker 30s linear infinite;
+            color: var(--bi-light);
         }
 
-        .up { color: var(--success); }
-        .down { color: var(--danger); }
-
-        canvas {
-            margin-top: 15px;
-            max-height: 150px;
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
         }
 
-        h1 {
-            font-weight: 300;
-            letter-spacing: 2px;
+        @media (max-width: 768px) {
+            .main-container { grid-template-columns: 1fr; }
+            .dashboard-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>FUTURE FINANCE <span style="color: var(--accent);">•</span></h1>
-        <img src="https://www.bi.no/globalassets/images/logo/bi_logo_white.png" alt="Bedriftslogo" class="logo">
+        <h1>BI INTELLIGENCE <span style="color: var(--accent);">•</span></h1>
+        <img src="https://www.bi.no/globalassets/images/logo/bi_logo_white.png" alt="Logo" class="logo">
     </div>
 
-    <div class="dashboard-grid">
-        <div class="card">
-            <div class="ticker-name">Oslo Børs (OSEBX)</div>
-            <div class="price" id="osebx-price">1,245.50</div>
-            <div class="delta up" id="osebx-delta">+0.45%</div>
-            <canvas id="chart-osebx"></canvas>
+    <div class="main-container">
+        <div class="dashboard-grid">
+            <div class="card" onclick="openModal('OSEBX', 'Oslo Børs Hovedindeks', 'Nordnet, DNB, Saxo Bank', 'Norsk økonomi er stabil med oljepriser på vei opp.')">
+                <div class="ticker-name">Oslo Børs</div>
+                <div class="price" id="osebx-p">1,245.20</div>
+                <canvas id="chart-osebx"></canvas>
+            </div>
+
+            <div class="card" onclick="openModal('BTC', 'Bitcoin (Digitalt Gull)', 'Firi, Binance, Coinbase', 'Bitcoin konsoliderer før neste halving. Høy volatilitet forventes.')">
+                <div class="ticker-name">Bitcoin</div>
+                <div class="price" id="btc-p">$64,231</div>
+                <canvas id="chart-btc"></canvas>
+            </div>
+
+            <div class="card" onclick="openModal('CYBER', 'CyberCoin', 'Uniswap, PancakeSwap', 'Fiktiv valuta som brukes i BI sitt spillbaserte læringsmiljø.')">
+                <div class="ticker-name">CyberCoin</div>
+                <div class="price" id="cyber-p">$12.45</div>
+                <canvas id="chart-cyber"></canvas>
+            </div>
+
+            <div class="card" onclick="openModal('FUTURE', 'FutureToken', 'Kraken, Gemini', 'Satsing på AI-basert smart-kontrakt teknologi.')">
+                <div class="ticker-name">FutureToken</div>
+                <div class="price" id="future-p">$0.85</div>
+                <canvas id="chart-future"></canvas>
+            </div>
         </div>
 
-        <div class="card">
-            <div class="ticker-name">Bitcoin (BTC)</div>
-            <div class="price" id="btc-price">$64,230</div>
-            <div class="delta up" id="btc-delta">+1.20%</div>
-            <canvas id="chart-btc"></canvas>
-        </div>
+        <div class="side-panel">
+            <div class="market-status card">
+                <h3>Market Sentiment</h3>
+                <div class="meter-bar">
+                    <div class="meter-pointer" id="pointer"></div>
+                </div>
+                <p id="sentiment-text">GREED</p>
+                <small style="opacity: 0.6;">Basert på volatilitet og volum</small>
+            </div>
 
-        <div class="card">
-            <div class="ticker-name">CyberCoin (CYBER)</div>
-            <div class="price" id="cyber-price">$12.40</div>
-            <div class="delta down" id="cyber-delta">-2.15%</div>
-            <canvas id="chart-cyber"></canvas>
+            <div class="card" style="margin-top: 20px;">
+                <h3 style="color: var(--accent);">Portefølje-tips</h3>
+                <p style="font-size: 0.9rem;">Husk å diversifisere mellom tradisjonell børs og krypto for å balansere risikoen.</p>
+            </div>
         </div>
+    </div>
 
-        <div class="card">
-            <div class="ticker-name">FutureToken (FTX2)</div>
-            <div class="price" id="future-price">$0.85</div>
-            <div class="delta up" id="future-delta">+15.4%</div>
-            <canvas id="chart-future"></canvas>
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <h2 id="m-title" style="color: var(--accent);"></h2>
+            <p id="m-desc"></p>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <h4>Hvor kan det handles?</h4>
+            <p id="m-trade" style="color: var(--bi-light);"></p>
+            <a href="#" class="buy-button">Gå til handelsplattform</a>
+        </div>
+    </div>
+
+    <div class="ticker-wrap">
+        <div class="ticker-move">
+            +++ BREAKING: Norges Bank vurderer renten +++ BITCOIN PASSERER NY MOTSTAND +++ OSEBX OPP 2% ETTER STERKE TALL FRA EQUINOR +++ CYBERCOIN LISTES PÅ NY BØRS +++ 
         </div>
     </div>
 
     <script>
-        // Funksjon for å lage tilfeldig data til grafene
-        function generateData(points, base) {
-            let data = [];
-            let current = base;
-            for(let i=0; i<points; i++) {
-                current = current + (Math.random() - 0.5) * (base * 0.05);
-                data.push(current);
-            }
-            return data;
+        // Modal funksjoner
+        function openModal(symbol, desc, trade, details) {
+            document.getElementById('m-title').innerText = symbol;
+            document.getElementById('m-desc').innerText = details;
+            document.getElementById('m-trade').innerText = trade;
+            document.getElementById('infoModal').style.display = 'flex';
         }
 
-        function createChart(id, color, label, baseValue) {
+        function closeModal() {
+            document.getElementById('infoModal').style.display = 'none';
+        }
+
+        // Graf-funksjon (samme som sist, bare litt penere)
+        function createChart(id, color, baseValue) {
             const ctx = document.getElementById(id).getContext('2d');
             return new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: Array(20).fill(''),
+                    labels: Array(15).fill(''),
                     datasets: [{
-                        label: label,
-                        data: generateData(20, baseValue),
+                        data: Array.from({length: 15}, () => baseValue + (Math.random()-0.5)*20),
                         borderColor: color,
                         borderWidth: 2,
-                        pointRadius: 0,
                         fill: true,
-                        backgroundColor: color + '22', // Transparent fyll
+                        backgroundColor: color + '11',
+                        pointRadius: 0,
                         tension: 0.4
                     }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: { 
-                        x: { display: false },
-                        y: { display: false }
-                    }
-                }
+                options: { scales: { x: {display:false}, y: {display:false} }, plugins: {legend:{display:false}} }
             });
         }
 
-        // Initialiser grafer
         const charts = {
-            osebx: createChart('chart-osebx', '#00ADBA', 'OSEBX', 1200),
-            btc: createChart('chart-btc', '#F7931A', 'BTC', 64000),
-            cyber: createChart('chart-cyber', '#00E676', 'CYBER', 12),
-            future: createChart('chart-future', '#BB86FC', 'FTX2', 0.8)
+            osebx: createChart('chart-osebx', '#00ADBA', 1200),
+            btc: createChart('chart-btc', '#F7931A', 64000),
+            cyber: createChart('chart-cyber', '#00E676', 12),
+            future: createChart('chart-future', '#BB86FC', 1)
         };
 
-        // Simuler "Live" oppdatering
+        // Simuler live bevegelser
         setInterval(() => {
-            for (let key in charts) {
-                const chart = charts[key];
-                const newData = chart.data.datasets[0].data;
-                const lastVal = newData[newData.length - 1];
-                const nextVal = lastVal + (Math.random() - 0.5) * (lastVal * 0.02);
-                
-                newData.shift();
-                newData.push(nextVal);
-                chart.update('none');
-
-                // Oppdater tekst-prisene
-                const priceEl = document.getElementById(`${key}-price`);
-                if(key === 'osebx') priceEl.innerText = nextVal.toLocaleString('no-NO', {minimumFractionDigits: 2});
-                else priceEl.innerText = '$' + nextVal.toLocaleString('en-US', {minimumFractionDigits: key === 'future' ? 4 : 2});
-            }
-        }, 2000);
+            const pointer = document.getElementById('pointer');
+            const randomPos = Math.floor(Math.random() * 90) + 5;
+            pointer.style.left = randomPos + '%';
+            
+            document.getElementById('sentiment-text').innerText = randomPos > 50 ? 'GREED' : 'FEAR';
+        }, 3000);
     </script>
+</body>
+</html>
 </body>
 </html>
