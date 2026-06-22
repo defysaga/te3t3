@@ -3,271 +3,472 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MADS | TERMINAL v11.0 | DEGEN EDITION</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>StudieVelgeren - Finn ditt neste studium</title>
     <style>
         :root {
-            --dark: #000c1a; --card: #05162b; --text: #cfd8e3; --dim: #708ea8;
-            --mint: #76c7c0; --coral: #e57373; --gold: #d4b483; --purple: #a29bfe;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+            --premium: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--dark); color: var(--text);
-            font-family: 'Consolas', monospace; margin: 0; padding: 20px; padding-bottom: 120px;
-            overflow-x: hidden;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
         }
 
-        .header { max-width: 1200px; margin: 0 auto 10px auto; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #111; padding-bottom: 10px; }
-        
-        .tab-container { max-width: 1200px; margin: 0 auto 25px auto; display: flex; gap: 8px; flex-wrap: wrap; }
-        .tab { padding: 8px 15px; cursor: pointer; color: var(--dim); background: rgba(255,255,255,0.02); border-radius: 4px; font-size: 0.8rem; border: 1px solid transparent; transition: 0.2s; }
-        .tab.active { color: var(--mint); border: 1px solid var(--mint); background: rgba(118, 199, 192, 0.05); }
+        header {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-        .tab-content { display: none; max-width: 1200px; margin: 0 auto; animation: fadeIn 0.3s ease; }
-        .tab-content.active { display: block; }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; }
-        .card { background: var(--card); border-radius: 8px; padding: 15px; border: 1px solid rgba(255,255,255,0.05); position: relative; }
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
 
-        /* SIZE MODULE */
-        .size-bar-wrap { width: 100%; height: 12px; background: #000; border-radius: 10px; margin-top: 5px; }
-        .size-bar { height: 100%; background: linear-gradient(90deg, var(--purple), var(--mint)); transition: width 1s ease; border-radius: 10px; }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
 
-        /* PRO TRADER STYLING */
-        .trade-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .trade-table td { padding: 12px 5px; border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .trade-input { background: #000; border: 1px solid #333; color: var(--mint); padding: 5px; width: 60px; text-align: center; }
-        .lev-select { background: #000; color: var(--gold); border: 1px solid var(--gold); padding: 5px; font-size: 0.7rem; }
-        
-        .btn { border: none; padding: 6px 12px; border-radius: 3px; cursor: pointer; font-weight: bold; font-family: inherit; font-size: 0.7rem; }
-        .btn-buy { background: var(--mint); color: #000; }
-        .btn-yolo { background: var(--purple); color: #000; }
-        .btn-panic { background: var(--coral); color: #000; width: 100%; margin-top: 10px; }
-        .btn-insider { background: transparent; border: 1px solid var(--gold); color: var(--gold); margin-top: 10px; }
+        /* Grid for input og resultater */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
 
-        .portfolio-item { display: flex; justify-content: space-between; padding: 8px; background: rgba(0,0,0,0.2); margin-top: 5px; border-radius: 4px; font-size: 0.8rem; }
+        @media (min-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr 2fr;
+            }
+        }
 
-        /* CASINO */
-        .reels { display: flex; justify-content: center; gap: 10px; margin: 20px 0; }
-        .reel { width: 80px; height: 100px; background: #05162b; border-radius: 5px; font-size: 3.5rem; display: flex; align-items: center; justify-content: center; border: 2px solid var(--gold); }
+        /* Panel-styling */
+        .panel {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            height: fit-content;
+        }
 
-        /* TICKER */
-        .ticker-wrap { position: fixed; bottom: 0; left: 0; width: 100%; background: #000; padding: 12px 0; border-top: 2px solid var(--mint); z-index: 1000; }
-        .ticker-move { display: inline-block; white-space: nowrap; animation: ticker 80s linear infinite; color: var(--mint); font-size: 0.85rem; font-weight: bold; }
-        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        input[type="number"], select, input[type="file"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-premium {
+            background-color: var(--premium);
+        }
+        .btn-premium:hover {
+            background-color: #d97706;
+        }
+
+        /* Tabs for Bachelor/Master */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+        }
+
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--gray);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        /* Resultatkort */
+        .study-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .study-tag {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            background: #eff6ff;
+            color: var(--primary);
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .school-tag {
+            background: #f0fdf4;
+            color: var(--secondary);
+        }
+
+        .lock-overlay {
+            background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.95));
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem 1.5rem 1.5rem;
+            text-align: center;
+            border-top: 1px dashed #cbd5e1;
+        }
+
+        /* Modal / Betalingspop-up */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .price-tag {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+            margin: 1rem 0;
+        }
+
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
+    <header>
+        <div class="logo">🎓 StudieVelgeren.no</div>
         <div>
-            <h1 style="margin:0; font-size: 1.3rem;">MADS_ULTIMATE_v11.0</h1>
-            <small style="color: var(--mint);">LIQUIDITY STATUS: OBSCENE | P.A.C. SCORE: MAXIMIZED</small>
+            <button class="btn btn-premium" style="padding: 0.5rem 1rem;" onclick="openPaymentModal('Full tilgang til alle opptakskrav', 199)">Bli Premium</button>
         </div>
-        <div style="text-align: right;">
-            <div style="color: var(--gold); font-size: 1.2rem;">$ <span id="balance">1000000</span></div>
-            <div id="insider-msg" style="font-size: 0.6rem; color: var(--purple);"></div>
+    </header>
+
+    <div class="container">
+        <div class="hero">
+            <h1>Hvor kan du komme inn?</h1>
+            <p>Last opp karakterer eller vitnemål for å se dine muligheter ved NTNU, UiO, BI og OsloMet.</p>
+        </div>
+
+        <div class="main-grid">
+            <div class="panel">
+                <h3>Dine Detaljer</h3>
+                <br>
+                <div class="form-group">
+                    <label for="diploma">Last opp vitnemål (PDF/Bilde)</label>
+                    <input type="file" id="diploma" accept="image/*,.pdf" onchange="simulateScan()">
+                    <small style="color: var(--secondary); display: none;" id="upload-success">✓ Vitnemål scannet automatisk!</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="grades">Ditt karaktersnitt (videregående/bachelor)</label>
+                    <input type="number" id="grades" step="0.1" min="1" max="6" value="4.5">
+                </div>
+
+                <div class="form-group">
+                    <label for="points">Eventuelle tilleggspoeng (f.eks. alderspoeng)</label>
+                    <input type="number" id="points" min="0" max="14" value="2">
+                </div>
+
+                <button class="btn" onclick="showResults()">Sjekk mine muligheter</button>
+            </div>
+
+            <div id="results-container" class="panel hidden">
+                <div class="tabs">
+                    <div class="tab active" id="tab-bachelor" onclick="switchTab('bachelor')">Bachelorgrad ()</div>
+                    <div class="tab" id="tab-master" onclick="switchTab('master')">Mastergrad ()</div>
+                </div>
+
+                <div id="bachelor-results">
+                    <div class="study-card">
+                        <span class="study-tag">Bachelor</span>
+                        <span class="study-tag school-tag">Handelshøyskolen BI</span>
+                        <h4>Siviløkonom / Økonomi og Ledelse</h4>
+                        <p>Karaktersnitt i fjor: <strong>4.2</strong> (Ditt snitt matcher godt!)</p>
+                        <br>
+                        <button class="btn" style="background: #f1f5f9; color: var(--dark);" onclick="openPaymentModal('Søknadsstrategi BI', 99)">Se hvordan du sikrer plassen →</button>
+                    </div>
+
+                    <div class="study-card" style="padding-bottom: 6rem;">
+                        <span class="study-tag">Bachelor</span>
+                        <span class="study-tag school-tag">Universitetet i Oslo (UiO)</span>
+                        <h4>Informatikk: Digital økonomi og ledelse</h4>
+                        <p>Karaktersnitt i fjor: <strong>5.1</strong> (Du er litt under grensen)</p>
+                        
+                        <div class="lock-overlay">
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--gray);">🔒 Lås opp detaljert kvalifiseringsplan (Ser du har R1-matte)</p>
+                            <button class="btn btn-premium" style="width: auto; padding: 0.5rem 1rem;" onclick="openPaymentModal('Kvalifiseringsplan UiO Informatikk', 149)">Se hvordan du kan kvalifisere</button>
+                        </div>
+                    </div>
+
+                    <div class="study-card">
+                        <span class="study-tag">Bachelor</span>
+                        <span class="study-tag school-tag">OsloMet</span>
+                        <h4>Sykepleierutdanning</h4>
+                        <p>Karaktersnitt i fjor: <strong>4.0</strong> (Du kvalifiserer akademisk!)</p>
+                        <p style="font-size: 0.85rem; color: #dc2626; margin-top: 0.5rem;">Merk: Krever minst karakter 3 i norsk og matematikk.</p>
+                        <br>
+                        <button class="btn btn-premium" onclick="openPaymentModal('Sjekk av spesifikke fagkrav', 49)">Sjekk om dine karakterer holder fagkravet</button>
+                    </div>
+                </div>
+
+                <div id="master-results" class="hidden">
+                    <div class="study-card" style="padding-bottom: 6rem;">
+                        <span class="study-tag">2-årig Master</span>
+                        <span class="study-tag school-tag">NTNU Trondheim</span>
+                        <h4>Datateknologi (Sivilingeniør)</h4>
+                        <p>Krever C eller B i snitt fra relevant bachelorgrad.</p>
+                        
+                        <div class="lock-overlay">
+                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--gray);">Vil bachelorfagene dine bli godkjent av NTNU?</p>
+                            <button class="btn btn-premium" style="width: auto; padding: 0.5rem 1rem;" onclick="openPaymentModal('Faglig godkjenningsanalyse NTNU', 249)">Kjør automatisk faganalyse</button>
+                        </div>
+                    </div>
+
+                    <div class="study-card">
+                        <span class="study-tag">Master</span>
+                        <span class="study-tag school-tag">Handelshøyskolen BI</span>
+                        <h4>Master of Science in Business (Siviløkonom)</h4>
+                        <p>Kvalifikasjonsstatus: <strong>Sannsynlig tilbud</strong> basert på nåværende karakterer.</p>
+                        <br>
+                        <button class="btn" style="background: #f1f5f9; color: var(--dark);" onclick="openGuidanceModal()">Book gratis uforpliktende samtale med BI-rådgiver</button>
+                    </div>
+                </div>
+
+                <div class="panel" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; margin-top: 2rem; text-align: center;">
+                    <h4>Trenger du hjelp til å velge, eller mangler du poeng?</h4>
+                    <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 1rem;">Sitt 1-til-1 med en profesjonell studieveileder som hjelper deg med å legge en plan for høsten.</p>
+                    <button class="btn" style="width: auto; padding: 0.75rem 2rem;" onclick="openGuidanceModal()">Book personlig veiledningstime</button>
+                </div>
+
+            </div>
         </div>
     </div>
 
-    <div class="tab-container">
-        <div class="tab active" onclick="openTab(event, 'markets')">MARKETS & SIZE</div>
-        <div class="tab" onclick="openTab(event, 'trading')">PRO_WHALE_TRADER</div>
-        <div class="tab" onclick="openTab(event, 'casino')">CASINO_RIG</div>
-        <div class="tab" onclick="openTab(event, 'ole')">RONESEN_WATCH</div>
-    </div>
-
-    <div id="markets" class="tab-content active">
-        <div class="grid">
-            <div class="card" style="border: 2px solid var(--mint);">
-                <div class="ticker-name">Mads Lunde Sørensen</div>
-                <div class="price plus">OVER 9000% ↑</div>
-                <canvas id="c-mads"></canvas>
-                <div class="size-bar-wrap"><div class="size-bar" style="width: 100%;"></div></div>
-                <div style="font-size: 0.5rem; margin-top: 5px;">P.A.C. STATUS: ABSOLUTE UNIT</div>
-            </div>
-            <div class="card">
-                <div class="ticker-name">Magnus Ødegård</div>
-                <div class="price plus">+$240,000</div>
-                <canvas id="c-magnus"></canvas>
-                <div class="size-bar-wrap"><div class="size-bar" style="width: 60%;"></div></div>
-            </div>
-            <div class="card">
-                <div class="ticker-name">Simon Henriksen</div>
-                <div class="price plus">Crypto Whale</div>
-                <canvas id="c-simon"></canvas>
-                <div class="size-bar-wrap"><div class="size-bar" style="width: 80%;"></div></div>
-            </div>
-            <div class="card" style="border: 1px solid var(--coral);">
-                <div class="ticker-name">Ole Ronesen</div>
-                <div class="price minus">REKT (-99.9%)</div>
-                <canvas id="c-ole-fail"></canvas>
-                <div class="size-bar-wrap"><div class="size-bar" style="width: 2%;"></div></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="trading" class="tab-content">
-        <div class="grid">
-            <div class="card" style="grid-column: span 2;">
-                <h3>🐳 WHALE EXECUTION TERMINAL</h3>
-                <table class="trade-table">
-                    <thead><tr style="color: var(--dim); font-size: 0.6rem;"><td>ASSET</td><td>PRICE</td><td>GEARING</td><td>QUANTITY</td><td>ACTION</td></tr></thead>
-                    <tbody>
-                        <tr>
-                            <td>NVIDIA (NVDA)</td><td>$892</td>
-                            <td><select id="l-nvda" class="lev-select"><option>1x</option><option>10x</option><option>100x</option></select></td>
-                            <td><input type="number" id="q-nvda" class="trade-input" value="10"></td>
-                            <td><button class="btn btn-buy" onclick="trade('NVDA', 892, 'nvda')">BUY</button> <button class="btn btn-yolo" onclick="yolo('NVDA', 892, 'nvda')">YOLO</button></td>
-                        </tr>
-                        <tr>
-                            <td>BITCOIN (BTC)</td><td>$64,231</td>
-                            <td><select id="l-btc" class="lev-select"><option>1x</option><option>10x</option><option>100x</option></select></td>
-                            <td><input type="number" id="q-btc" class="trade-input" value="1"></td>
-                            <td><button class="btn btn-buy" onclick="trade('BTC', 64231, 'btc')">BUY</button> <button class="btn btn-yolo" onclick="yolo('BTC', 64231, 'btc')">YOLO</button></td>
-                        </tr>
-                        <tr>
-                            <td>EQUINOR (EQNR)</td><td>$312</td>
-                            <td><select id="l-eqnr" class="lev-select"><option>1x</option><option>10x</option><option>100x</option></select></td>
-                            <td><input type="number" id="q-eqnr" class="trade-input" value="100"></td>
-                            <td><button class="btn btn-buy" onclick="trade('EQNR', 312, 'eqnr')">BUY</button> <button class="btn btn-yolo" onclick="yolo('EQNR', 312, 'eqnr')">YOLO</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button class="btn btn-insider" onclick="getInsider()">GET INSIDER LEAK</button>
-            </div>
-            <div class="card">
-                <h3>💼 PORTFOLIO</h3>
-                <div id="portfolio-display">Empty...</div>
-                <button class="btn btn-panic" onclick="panic()">PANIC SELL ALL (OLE IS LOOKING)</button>
-                <div style="margin-top:10px; font-size: 0.6rem;">
-                    <input type="checkbox" id="hodl-mode"> ENABLE HODL MODE (LOCK SELL)
+    <div class="modal" id="paymentModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('paymentModal')">&times;</button>
+            <h3 id="modal-title">Lås opp rapport</h3>
+            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Få umiddelbar tilgang til detaljer, historisk statistikk og innsidetips for opptaket.</p>
+            <div class="price-tag" id="modal-price">99 kr</div>
+            
+            <div style="text-align: left; margin-bottom: 1.5rem;">
+                <label style="font-size: 0.85rem;">Kortnummer</label>
+                <input type="text" placeholder="4242 •••• •••• ••••" style="margin-bottom: 1rem;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div>
+                        <label style="font-size: 0.85rem;">MM/ÅÅ</label>
+                        <input type="text" placeholder="12/28">
+                    </div>
+                    <div>
+                        <label style="font-size: 0.85rem;">CVC</label>
+                        <input type="text" placeholder="123">
+                    </div>
                 </div>
             </div>
+
+            <button class="btn btn-premium" onclick="simulatePaymentSuccess()">Betal og Lås Opp Nå</button>
+            <p style="font-size: 0.75rem; color: var(--gray); margin-top: 0.5rem;">🔒 Sikker betaling via Vipps eller Stripe</p>
         </div>
     </div>
 
-    <div id="casino" class="tab-content">
-        <div class="card" style="text-align:center;">
-            <h2 style="color: var(--gold);">🎰 MADS MONEY PRINTER</h2>
-            <div class="reels">
-                <div class="reel" id="r1">💰</div><div class="reel" id="r2">💰</div><div class="reel" id="r3">💰</div>
+    <div class="modal" id="guidanceModal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeModal('guidanceModal')">&times;</button>
+            <h3>Book privat studieveiledning</h3>
+            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Velg et tidspunkt som passer for en 30-minutters videosamtale med en av våre eksperter.</p>
+            <br>
+            <div style="text-align: left; margin-bottom: 1.5rem;">
+                <div class="form-group">
+                    <label>Ditt Navn</label>
+                    <input type="text" placeholder="Ola Nordmann">
+                </div>
+                <div class="form-group">
+                    <label>Ønsket dato</label>
+                    <input type="date">
+                </div>
+                <div class="form-group">
+                    <label>Foretrukket tidspunkt</label>
+                    <select>
+                        <option>Formiddag (09:00 - 12:00)</option>
+                        <option>Ettermiddag (12:00 - 16:00)</option>
+                        <option>Kveldstid (16:00 - 20:00)</option>
+                    </select>
+                </div>
             </div>
-            <button class="btn btn-buy" style="padding: 15px 40px;" onclick="spin()">PULL LEVER</button>
-        </div>
-    </div>
-
-    <div id="ole" class="tab-content">
-        <div class="card" style="text-align: center; border-color: var(--coral);">
-            <h2>RONESEN_DOOM_INDEX</h2>
-            <div id="ole-insult" style="font-size: 1.2rem; margin: 20px 0; color: var(--coral);">"Ole prøver å trade aksjer via tekst-TV..."</div>
-            <button class="btn btn-yolo" onclick="donate()">DONER TIL OLE</button>
-            <div id="charity-msg" style="margin-top:10px; color: var(--mint);"></div>
-        </div>
-    </div>
-
-    <div class="ticker-wrap">
-        <div class="ticker-move">
-            +++ MADS LUNDE SØRENSEN SETTER NY VERDENSREKORD I LIKVIDITET +++ OLE RONESEN HAR BLITT NEKTET ADGANG TIL ALLE NETTSIDER SOM SLUTTER PÅ .COM +++ SIMON HENRIKSEN HAR KJØPT EN DIGITAL ØY +++ MAGNUS ØDEGÅRD LEVERER STABIL VEKST +++ NY FORSKNING: MADS SIN P.A.C. SCORE ER UTENFOR SKALAEN +++ 
+            <button class="btn" onclick="alert('Takk! En veileder kontakter deg på e-post innen kort tid for å bekrefte timen.')">Bekreft booking (Første samtale er gratis)</button>
         </div>
     </div>
 
     <script>
-        let balance = 1000000;
-        let portfolio = {};
-
-        function openTab(evt, name) {
-            document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(name).style.display = 'block';
-            evt.currentTarget.classList.add('active');
+        // Simulerer scanning av vitnemål når en fil velges
+        function simulateScan() {
+            const successText = document.getElementById('upload-success');
+            successText.style.display = 'block';
+            successText.innerText = "Analyserer vitnemål...";
+            
+            setTimeout(() => {
+                successText.innerText = "✓ Vitnemål scannet! Snitt beregnet til 4.5 (+2 tilleggspoeng funnet).";
+                document.getElementById('grades').value = 4.5;
+                document.getElementById('points').value = 2;
+                showResults();
+            }, 1200);
         }
 
-        function trade(sym, price, id) {
-            if(document.getElementById('hodl-mode').checked) { alert("HODL MODE ACTIVE! NO SELLING/TRADING ALLOWED!"); return; }
-            let qty = parseInt(document.getElementById('q-'+id).value);
-            let lev = parseInt(document.getElementById('l-'+id).value);
-            execute(sym, price, qty, lev);
+        // Viser resultatmottakeren
+        function showResults() {
+            const results = document.getElementById('results-container');
+            results.classList.remove('hidden');
+            
+            // Oppdaterer tab-tekst med antall eksempler
+            document.getElementById('tab-bachelor').innerText = "Bachelorgrad (3)";
+            document.getElementById('tab-master').innerText = "Mastergrad (2)";
+            
+            // Scroller ned til resultatene på mobil
+            results.scrollIntoView({ behavior: 'smooth' });
         }
 
-        function yolo(sym, price, id) {
-            let lev = parseInt(document.getElementById('l-'+id).value);
-            execute(sym, price, Math.floor(balance/price), lev);
+        // Bytter mellom bachelor og master tabs
+        function switchTab(type) {
+            const bachTab = document.getElementById('tab-bachelor');
+            const mastTab = document.getElementById('tab-master');
+            const bachContent = document.getElementById('bachelor-results');
+            const mastContent = document.getElementById('master-results');
+
+            if (type === 'bachelor') {
+                bachTab.classList.add('active');
+                mastTab.classList.remove('active');
+                bachContent.classList.remove('hidden');
+                mastContent.classList.add('hidden');
+            } else {
+                mastTab.classList.add('active');
+                bachTab.classList.remove('active');
+                mastContent.classList.remove('hidden');
+                bachContent.classList.add('hidden');
+            }
         }
 
-        function execute(sym, price, qty, lev) {
-            let cost = (qty * price) / lev;
-            if(balance >= cost) {
-                balance -= cost;
-                portfolio[sym] = (portfolio[sym] || 0) + qty;
-                updateUI();
-            } else { alert("Insufficient funds! Visit the Casino."); }
+        // Åpne betalingsvindu med dynamisk info
+        function openPaymentModal(title, price) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-price').innerText = price + " kr";
+            document.getElementById('paymentModal').style.display = 'flex';
         }
 
-        function panic() {
-            portfolio = {};
-            balance += 50000; // Litt "panic sell" bonus
-            updateUI();
-            alert("MARKET DUMPED! PORTFOLIO SECURED FROM OLE.");
+        // Åpne veiledningsvindu
+        function openGuidanceModal() {
+            document.getElementById('guidanceModal').style.display = 'flex';
         }
 
-        function updateUI() {
-            document.getElementById('balance').innerText = balance.toLocaleString();
-            let html = Object.keys(portfolio).map(s => `
-                <div class="portfolio-item">
-                    <span>${s}</span>
-                    <span style="color:var(--mint)">${portfolio[s]} units (+${Math.floor(Math.random()*100)}%)</span>
-                </div>
-            `).join('');
-            document.getElementById('portfolio-display').innerHTML = html || "Empty...";
+        // Lukke vinduer
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
         }
 
-        function getInsider() {
-            const leaks = ["Mads kjøper opp Apple i morgen.", "Ole skal selge huset - SHORT MARKEDET!", "Bitcoin til 1 million om 2 timer.", "Kebab Holding AS melder om rekordresultat."];
-            document.getElementById('insider-msg').innerText = "LEAK: " + leaks[Math.floor(Math.random()*leaks.length)];
+        // Simulerer gjennomført kjøp
+        function simulatePaymentSuccess() {
+            alert("Takk for kjøpet! (Dette er en prototype, i den ekte løsningen ville detaljert rapport, innsikt i forkurs, kvoter og forbedringsmuligheter blitt låst opp nå).");
+            closeModal('paymentModal');
         }
-
-        function donate() {
-            const items = ["en brukt q-tip", "en halvspist kebab", "en 10-kroning", "en NFT av en gråstein"];
-            document.getElementById('charity-msg').innerText = "Du sendte " + items[Math.floor(Math.random()*items.length)] + " til Ole.";
-        }
-
-        function spin() {
-            let count = 0;
-            let inv = setInterval(() => {
-                const icons = ["💰", "💎", "🚀", "👑"];
-                document.getElementById('r1').innerText = icons[Math.floor(Math.random()*4)];
-                document.getElementById('r2').innerText = icons[Math.floor(Math.random()*4)];
-                document.getElementById('r3').innerText = icons[Math.floor(Math.random()*4)];
-                if(++count > 15) {
-                    clearInterval(inv);
-                    document.getElementById('r1').innerText = "💰"; document.getElementById('r2').innerText = "💰"; document.getElementById('r3').innerText = "💰";
-                    balance += 1000000;
-                    updateUI();
-                }
-            }, 70);
-        }
-
-        function makeChart(id, color, dataIn) {
-            const ctx = document.getElementById(id).getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Array(dataIn.length).fill(''),
-                    datasets: [{
-                        data: dataIn, borderColor: color, borderWidth: 2, pointRadius: 0, fill: true, backgroundColor: color + '11', tension: 0.4
-                    }]
-                },
-                options: { scales: { x: {display:false}, y: {display:false} }, plugins: {legend:{display:false}} }
-            });
-        }
-
-        makeChart('c-mads', '#76c7c0', [1, 10, 100, 1000, 10000]);
-        makeChart('c-magnus', '#76c7c0', [100, 102, 110, 120]);
-        makeChart('c-simon', '#a29bfe', [50, 400, 200, 800]);
-        makeChart('c-ole-fail', '#e57373', [1000, 500, 100, 1]);
     </script>
 </body>
 </html>
