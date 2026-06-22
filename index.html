@@ -3,35 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StudieVelgeren - Finn ditt neste studium</title>
+    <title>KarakterSjekken.no - Finn din utdanningsvei</title>
+    <!-- Importerer moderne font fra Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --secondary: #10b981;
-            --dark: #1e293b;
-            --light: #f8fafc;
-            --gray: #64748b;
-            --premium: #f59e0b;
+            /* Fargepalett */
+            --bg-body: #f8fafc;
+            --bg-panel: #ffffff;
+            --text-main: #0f172a; /* Mørk indigo/svart */
+            --text-muted: #64748b;
+            
+            --primary: #3b82f6; /* Levende blå */
+            --primary-hover: #2563eb;
+            --primary-light: #eff6ff;
+            
+            --premium: #f59e0b; /* Gull/Amber */
+            --premium-hover: #d97706;
+            
+            --border-color: #e2e8f0;
+            --success: #10b981;
+            
+            /* Skygger og avrunding */
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --radius-md: 8px;
+            --radius-lg: 12px;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            background-color: var(--light);
-            color: var(--dark);
+            background-color: var(--bg-body);
+            color: var(--text-main);
             line-height: 1.6;
         }
 
+        /* --- HEADER & LOGO --- */
         header {
-            background-color: white;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1rem 2rem;
+            background-color: var(--bg-panel);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -40,50 +60,96 @@
             z-index: 100;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 35px;
+            height: 35px;
+            background-color: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
             color: var(--primary);
         }
 
+        /* --- HOVEDLAYOUT --- */
         .container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
         }
 
         .hero {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 4rem;
         }
 
         .hero h1 {
-            font-size: 2.5rem;
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
             margin-bottom: 1rem;
+            color: var(--text-main);
         }
 
-        /* Grid for input og resultater */
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
         .main-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 2rem;
+            gap: 2.5rem;
+            align-items: start;
         }
 
-        @media (min-width: 768px) {
+        @media (min-width: 992px) {
             .main-grid {
-                grid-template-columns: 1fr 2fr;
+                grid-template-columns: 350px 1fr;
             }
         }
 
-        /* Panel-styling */
+        /* --- PANELER --- */
         .panel {
-            background: white;
+            background: var(--bg-panel);
             padding: 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            height: fit-content;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border-color);
         }
 
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* --- SKJEMA ELEMENTER --- */
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -91,104 +157,200 @@
         label {
             display: block;
             font-weight: 600;
+            font-size: 0.9rem;
             margin-bottom: 0.5rem;
+            color: var(--text-main);
         }
 
         input[type="number"], select, input[type="file"] {
             width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #cbd5e1;
-            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Custom file upload styling */
+        input[type="file"]::file-selector-button {
+            border: none;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            margin-right: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* --- KNAPPER --- */
         .btn {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             width: 100%;
-            padding: 0.75rem;
+            padding: 0.8rem 1.5rem;
             background-color: var(--primary);
             color: white;
             border: none;
-            border-radius: 6px;
+            border-radius: var(--radius-md);
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: background 0.2s;
-            text-align: center;
+            transition: background 0.2s, transform 0.1s;
+            text-decoration: none;
         }
 
         .btn:hover {
             background-color: var(--primary-hover);
         }
 
+        .btn:active {
+            transform: translateY(1px);
+        }
+
         .btn-premium {
             background-color: var(--premium);
         }
         .btn-premium:hover {
-            background-color: #d97706;
+            background-color: var(--premium-hover);
         }
 
-        /* Tabs for Bachelor/Master */
+        .btn-outline {
+            background-color: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+        .btn-outline:hover {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            border-color: #cbd5e1;
+        }
+
+        /* --- TABS --- */
         .tabs {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 0.5rem;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            background: #f1f5f9;
+            padding: 0.5rem;
+            border-radius: var(--radius-md);
         }
 
         .tab {
-            padding: 0.5rem 1rem;
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
             cursor: pointer;
             font-weight: 600;
-            color: var(--gray);
-            border-bottom: 3px solid transparent;
+            color: var(--text-muted);
+            border-radius: 6px;
+            transition: background 0.2s, color 0.2s;
         }
 
         .tab.active {
+            background-color: white;
             color: var(--primary);
-            border-bottom-color: var(--primary);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
         }
 
-        /* Resultatkort */
+        /* --- RESULTATKORT --- */
         .study-card {
             background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
             padding: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             position: relative;
             overflow: hidden;
+            transition: box-shadow 0.2s, border-color 0.2s;
         }
 
-        .study-tag {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            background: #eff6ff;
-            color: var(--primary);
-            border-radius: 4px;
+        .study-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+            gap: 10px;
+        }
+
+        .school-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
             font-size: 0.85rem;
-            font-weight: 600;
+            color: var(--text-muted);
             margin-bottom: 0.5rem;
         }
 
-        .school-tag {
-            background: #f0fdf4;
-            color: var(--secondary);
+        .school-logo-placeholder {
+            width: 20px;
+            height: 20px;
+            background: #e2e8f0;
+            border-radius: 4px;
         }
 
+        .study-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-good {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-locked {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .card-details {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-details strong {
+            color: var(--text-main);
+        }
+
+        /* Betalingsvegg-overlegg på kort */
         .lock-overlay {
-            background: linear-gradient(to bottom, rgba(255,255,255,0.8), rgba(255,255,255,0.95));
+            background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 80%);
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 2rem 1.5rem 1.5rem;
+            padding: 3rem 1.5rem 1.5rem;
             text-align: center;
-            border-top: 1px dashed #cbd5e1;
         }
 
-        /* Modal / Betalingspop-up */
+        /* --- MODALER --- */
         .modal {
             display: none;
             position: fixed;
@@ -196,238 +358,254 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(15, 23, 42, 0.7); /* Mørk indigo-tone */
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            backdrop-filter: blur(4px);
         }
 
         .modal-content {
             background: white;
-            padding: 2.5rem;
-            border-radius: 12px;
-            max-width: 500px;
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+            max-width: 550px;
             width: 90%;
-            text-align: center;
             position: relative;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
         }
 
         .close-modal {
             position: absolute;
-            top: 1rem;
-            right: 1rem;
+            top: 1.5rem;
+            right: 1.5rem;
             font-size: 1.5rem;
             cursor: pointer;
             border: none;
             background: none;
+            color: var(--text-muted);
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--premium-light, #fffbeb);
+            color: var(--premium);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
         }
 
         .price-tag {
-            font-size: 2rem;
-            font-weight: bold;
-            color: var(--dark);
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-main);
             margin: 1rem 0;
         }
 
-        .hidden {
-            display: none;
-        }
+        /* Hjelpeklasser */
+        .hidden { display: none; }
+        .mt-2 { margin-top: 2rem; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">🎓 StudieVelgeren.no</div>
+        <a href="#" class="logo-container">
+            <div class="logo-icon">K</div>
+            <div class="logo-text">Karakter<span>Sjekken</span></div>
+        </a>
         <div>
-            <button class="btn btn-premium" style="padding: 0.5rem 1rem;" onclick="openPaymentModal('Full tilgang til alle opptakskrav', 199)">Bli Premium</button>
+            <button class="btn btn-outline" style="padding: 0.5rem 1rem; font-size: 0.9rem;" onclick="openPaymentModal('Full tilgang', 199)">Bli Premium ✨</button>
         </div>
     </header>
 
     <div class="container">
         <div class="hero">
-            <h1>Hvor kan du komme inn?</h1>
-            <p>Last opp karakterer eller vitnemål for å se dine muligheter ved NTNU, UiO, BI og OsloMet.</p>
+            <h1>Hvor kan du studere?</h1>
+            <p>Last opp vitnemålet ditt eller legg inn karakterene dine manuelt for å se dine muligheter i sanntid.</p>
         </div>
 
         <div class="main-grid">
+            <!-- VENSTRE PANEL: INPUT -->
             <div class="panel">
-                <h3>Dine Detaljer</h3>
-                <br>
+                <h3 class="panel-title">
+                    <span style="color: var(--primary);">▼</span>
+                    Ditt Grunnlag
+                </h3>
+                
                 <div class="form-group">
-                    <label for="diploma">Last opp vitnemål (PDF/Bilde)</label>
+                    <label for="diploma">1. Last opp vitnemål (frivillig)</label>
                     <input type="file" id="diploma" accept="image/*,.pdf" onchange="simulateScan()">
-                    <small style="color: var(--secondary); display: none;" id="upload-success">✓ Vitnemål scannet automatisk!</small>
+                    <p style="color: var(--success); font-size: 0.8rem; font-weight: 600; margin-top: 0.5rem; display: none;" id="upload-success">✓ Scannet vellykket!</p>
+                </div>
+
+                <div style="text-align: center; color: var(--text-muted); margin: 1rem 0; font-size: 0.9rem;">— eller fyll inn —</div>
+
+                <div class="form-group">
+                    <label for="grades">Ditt karaktersnitt (VGS eller Bachelor)</label>
+                    <input type="number" id="grades" step="0.1" min="1" max="6" placeholder="f.eks. 4.5">
                 </div>
 
                 <div class="form-group">
-                    <label for="grades">Ditt karaktersnitt (videregående/bachelor)</label>
-                    <input type="number" id="grades" step="0.1" min="1" max="6" value="4.5">
+                    <label for="points">Tilleggspoeng / Alderspoeng</label>
+                    <input type="number" id="points" min="0" max="14" placeholder="f.eks. 2">
                 </div>
 
-                <div class="form-group">
-                    <label for="points">Eventuelle tilleggspoeng (f.eks. alderspoeng)</label>
-                    <input type="number" id="points" min="0" max="14" value="2">
-                </div>
-
-                <button class="btn" onclick="showResults()">Sjekk mine muligheter</button>
+                <button class="btn" onclick="showResults()">
+                    Sjekk mine muligheter
+                </button>
             </div>
 
-            <div id="results-container" class="panel hidden">
+            <!-- HØYRE PANEL: RESULTATER -->
+            <div id="results-container" class="hidden">
                 <div class="tabs">
-                    <div class="tab active" id="tab-bachelor" onclick="switchTab('bachelor')">Bachelorgrad ()</div>
-                    <div class="tab" id="tab-master" onclick="switchTab('master')">Mastergrad ()</div>
+                    <div class="tab active" id="tab-bachelor" onclick="switchTab('bachelor')">Bachelorgrad</div>
+                    <div class="tab" id="tab-master" onclick="switchTab('master')">Mastergrad</div>
                 </div>
 
                 <div id="bachelor-results">
+                    <!-- Kort 1: Siviløkonom BI - POSITIVT -->
                     <div class="study-card">
-                        <span class="study-tag">Bachelor</span>
-                        <span class="study-tag school-tag">Handelshøyskolen BI</span>
-                        <h4>Siviløkonom / Økonomi og Ledelse</h4>
-                        <p>Karaktersnitt i fjor: <strong>4.2</strong> (Ditt snitt matcher godt!)</p>
-                        <br>
-                        <button class="btn" style="background: #f1f5f9; color: var(--dark);" onclick="openPaymentModal('Søknadsstrategi BI', 99)">Se hvordan du sikrer plassen →</button>
+                        <div class="card-header">
+                            <div>
+                                <div class="school-info">
+                                    <div class="school-logo-placeholder"></div>
+                                    Handelshøyskolen BI
+                                </div>
+                                <h4 class="study-title">Økonomi og Ledelse (Siviløkonom)</h4>
+                            </div>
+                            <span class="status-badge status-good">✓ Sannsynlig inntak</span>
+                        </div>
+                        <p class="card-details">Fjorårets grense: <strong>4.2</strong> (Ordinær kvote). Ditt beregnede snitt ser ut til å holde.</p>
+                        <button class="btn btn-outline" onclick="openPaymentModal('Søknadsstrategi BI', 99)">Få søknadsstrategi</button>
                     </div>
 
-                    <div class="study-card" style="padding-bottom: 6rem;">
-                        <span class="study-tag">Bachelor</span>
-                        <span class="study-tag school-tag">Universitetet i Oslo (UiO)</span>
-                        <h4>Informatikk: Digital økonomi og ledelse</h4>
-                        <p>Karaktersnitt i fjor: <strong>5.1</strong> (Du er litt under grensen)</p>
+                    <!-- Kort 2: Sykepleie OsloMet - POSITIVT MED FORBEHOLD -->
+                    <div class="study-card">
+                        <div class="card-header">
+                            <div>
+                                <div class="school-info">
+                                    <div class="school-logo-placeholder"></div>
+                                    OsloMet
+                                </div>
+                                <h4 class="study-title">Sykepleierutdanning</h4>
+                            </div>
+                            <span class="status-badge status-good">✓ Sannsynlig inntak</span>
+                        </div>
+                        <p class="card-details">Snitt fjor: <strong>4.0</strong>. <span style="color: #dc2626;">Krav om karakter 3 i Norsk og Matte.</span></p>
+                        <button class="btn btn-premium" onclick="openPaymentModal('Fagkrav-sjekk', 49)">Lås opp detaljert fagkrav-sjekk 🔒</button>
+                    </div>
+
+                    <!-- Kort 3: Informatikk UiO - LÅST -->
+                    <div class="study-card" style="padding-bottom: 7rem;">
+                        <div class="card-header">
+                            <div>
+                                <div class="school-info">
+                                    <div class="school-logo-placeholder"></div>
+                                    Universitetet i Oslo
+                                </div>
+                                <h4 class="study-title">Informatikk: Digital økonomi</h4>
+                            </div>
+                            <span class="status-badge status-locked">🔒 Usikkert</span>
+                        </div>
+                        <p class="card-details">Snitt fjor: <strong>5.1</strong>. Dine karakterer er i grenseland.</p>
                         
                         <div class="lock-overlay">
-                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--gray);">🔒 Lås opp detaljert kvalifiseringsplan (Ser du har R1-matte)</p>
-                            <button class="btn btn-premium" style="width: auto; padding: 0.5rem 1rem;" onclick="openPaymentModal('Kvalifiseringsplan UiO Informatikk', 149)">Se hvordan du kan kvalifisere</button>
+                            <button class="btn btn-premium" style="width: auto;" onclick="openPaymentModal('Kvalifiseringsplan UiO', 149)">Se hvordan du kan kvalifisere 🔒</button>
                         </div>
-                    </div>
-
-                    <div class="study-card">
-                        <span class="study-tag">Bachelor</span>
-                        <span class="study-tag school-tag">OsloMet</span>
-                        <h4>Sykepleierutdanning</h4>
-                        <p>Karaktersnitt i fjor: <strong>4.0</strong> (Du kvalifiserer akademisk!)</p>
-                        <p style="font-size: 0.85rem; color: #dc2626; margin-top: 0.5rem;">Merk: Krever minst karakter 3 i norsk og matematikk.</p>
-                        <br>
-                        <button class="btn btn-premium" onclick="openPaymentModal('Sjekk av spesifikke fagkrav', 49)">Sjekk om dine karakterer holder fagkravet</button>
                     </div>
                 </div>
 
                 <div id="master-results" class="hidden">
-                    <div class="study-card" style="padding-bottom: 6rem;">
-                        <span class="study-tag">2-årig Master</span>
-                        <span class="study-tag school-tag">NTNU Trondheim</span>
-                        <h4>Datateknologi (Sivilingeniør)</h4>
-                        <p>Krever C eller B i snitt fra relevant bachelorgrad.</p>
-                        
-                        <div class="lock-overlay">
-                            <p style="font-size: 0.9rem; margin-bottom: 0.5rem; color: var(--gray);">Vil bachelorfagene dine bli godkjent av NTNU?</p>
-                            <button class="btn btn-premium" style="width: auto; padding: 0.5rem 1rem;" onclick="openPaymentModal('Faglig godkjenningsanalyse NTNU', 249)">Kjør automatisk faganalyse</button>
-                        </div>
-                    </div>
-
+                    <!-- Kort: BI Master -->
                     <div class="study-card">
-                        <span class="study-tag">Master</span>
-                        <span class="study-tag school-tag">Handelshøyskolen BI</span>
-                        <h4>Master of Science in Business (Siviløkonom)</h4>
-                        <p>Kvalifikasjonsstatus: <strong>Sannsynlig tilbud</strong> basert på nåværende karakterer.</p>
-                        <br>
-                        <button class="btn" style="background: #f1f5f9; color: var(--dark);" onclick="openGuidanceModal()">Book gratis uforpliktende samtale med BI-rådgiver</button>
+                        <div class="card-header">
+                            <div>
+                                <div class="school-info">
+                                    <div class="school-logo-placeholder"></div>
+                                    Handelshøyskolen BI
+                                </div>
+                                <h4 class="study-title">MSc in Business (Siviløkonom)</h4>
+                            </div>
+                            <span class="status-badge status-good">✓ Kvalifisert</span>
+                        </div>
+                        <p class="card-details">Krever relevant Bachelor og snitt på C eller bedre.</p>
+                        <button class="btn btn-outline" onclick="openGuidanceModal()">Book uforpliktende samtale med BI</button>
                     </div>
                 </div>
 
-                <div class="panel" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; margin-top: 2rem; text-align: center;">
-                    <h4>Trenger du hjelp til å velge, eller mangler du poeng?</h4>
-                    <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 1rem;">Sitt 1-til-1 med en profesjonell studieveileder som hjelper deg med å legge en plan for høsten.</p>
-                    <button class="btn" style="width: auto; padding: 0.75rem 2rem;" onclick="openGuidanceModal()">Book personlig veiledningstime</button>
+                <!-- VEILEDNINGS-BANNER -->
+                <div class="panel mt-2" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: white; text-align: center;">
+                    <h4 style="font-size: 1.25rem; margin-bottom: 0.5rem;">Usikker på valget?</h4>
+                    <p style="color: #cbd5e1; font-size: 0.95rem; margin-bottom: 1.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">Snakk med en profesjonell studieveileder for å legge en plan for utdanningen og karrieren din.</p>
+                    <button class="btn btn-premium" style="width: auto; padding: 0.75rem 2rem;" onclick="openGuidanceModal()">Book personlig veiledning</button>
                 </div>
 
             </div>
         </div>
     </div>
 
+    <!-- BETALINGS-MODAL -->
     <div class="modal" id="paymentModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal('paymentModal')">&times;</button>
-            <h3 id="modal-title">Lås opp rapport</h3>
-            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Få umiddelbar tilgang til detaljer, historisk statistikk og innsidetips for opptaket.</p>
+            <div class="modal-icon">✨</div>
+            <h3 id="modal-title" style="font-size: 1.5rem; font-weight: 800;">Lås opp full innsikt</h3>
+            <p style="color: var(--text-muted); margin-top: 0.5rem;">Få tilgang til historisk data, realkompetanse-vurdering og din personlige vei til opptak.</p>
             <div class="price-tag" id="modal-price">99 kr</div>
             
-            <div style="text-align: left; margin-bottom: 1.5rem;">
-                <label style="font-size: 0.85rem;">Kortnummer</label>
-                <input type="text" placeholder="4242 •••• •••• ••••" style="margin-bottom: 1rem;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                    <div>
-                        <label style="font-size: 0.85rem;">MM/ÅÅ</label>
-                        <input type="text" placeholder="12/28">
-                    </div>
-                    <div>
-                        <label style="font-size: 0.85rem;">CVC</label>
-                        <input type="text" placeholder="123">
-                    </div>
-                </div>
-            </div>
-
-            <button class="btn btn-premium" onclick="simulatePaymentSuccess()">Betal og Lås Opp Nå</button>
-            <p style="font-size: 0.75rem; color: var(--gray); margin-top: 0.5rem;">🔒 Sikker betaling via Vipps eller Stripe</p>
+            <button class="btn btn-premium" style="font-size: 1.1rem; padding: 1rem;" onclick="simulatePaymentSuccess()">Vipps eller Kort</button>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">Éngangsbetaling. Ingen abonnement.</p>
         </div>
     </div>
 
+    <!-- VEILEDNINGS-MODAL -->
     <div class="modal" id="guidanceModal">
-        <div class="modal-content">
+        <div class="modal-content" style="text-align: left;">
             <button class="close-modal" onclick="closeModal('guidanceModal')">&times;</button>
-            <h3>Book privat studieveiledning</h3>
-            <p style="color: var(--gray); font-size: 0.9rem; margin-top: 0.5rem;">Velg et tidspunkt som passer for en 30-minutters videosamtale med en av våre eksperter.</p>
-            <br>
-            <div style="text-align: left; margin-bottom: 1.5rem;">
-                <div class="form-group">
-                    <label>Ditt Navn</label>
-                    <input type="text" placeholder="Ola Nordmann">
-                </div>
-                <div class="form-group">
-                    <label>Ønsket dato</label>
-                    <input type="date">
-                </div>
-                <div class="form-group">
-                    <label>Foretrukket tidspunkt</label>
-                    <select>
-                        <option>Formiddag (09:00 - 12:00)</option>
-                        <option>Ettermiddag (12:00 - 16:00)</option>
-                        <option>Kveldstid (16:00 - 20:00)</option>
-                    </select>
-                </div>
+            <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">Book studieveiledning</h3>
+            
+            <div class="form-group">
+                <label>Navn</label>
+                <input type="text" placeholder="Ola Nordmann">
             </div>
-            <button class="btn" onclick="alert('Takk! En veileder kontakter deg på e-post innen kort tid for å bekrefte timen.')">Bekreft booking (Første samtale er gratis)</button>
+            <div class="form-group">
+                <label>Foretrukket dato</label>
+                <input type="date">
+            </div>
+            
+            <button class="btn" onclick="alert('Takk! En veileder kontakter deg snart.')">Bekreft booking</button>
         </div>
     </div>
 
     <script>
-        // Simulerer scanning av vitnemål når en fil velges
+        // Logikk (samme som før, men tilpasset nye IDer)
         function simulateScan() {
+            const fileInput = document.getElementById('diploma');
             const successText = document.getElementById('upload-success');
-            successText.style.display = 'block';
-            successText.innerText = "Analyserer vitnemål...";
             
-            setTimeout(() => {
-                successText.innerText = "✓ Vitnemål scannet! Snitt beregnet til 4.5 (+2 tilleggspoeng funnet).";
-                document.getElementById('grades').value = 4.5;
-                document.getElementById('points').value = 2;
-                showResults();
-            }, 1200);
+            if(fileInput.files.length > 0) {
+                successText.style.display = 'block';
+                successText.innerText = "Analyserer...";
+                
+                setTimeout(() => {
+                    successText.innerText = "✓ Scannet! Karakterer fylt ut.";
+                    document.getElementById('grades').value = 4.8; // Simulert verdi fra scanning
+                    document.getElementById('points').value = 2;
+                }, 1500);
+            }
         }
 
-        // Viser resultatmottakeren
         function showResults() {
-            const results = document.getElementById('results-container');
-            results.classList.remove('hidden');
-            
-            // Oppdaterer tab-tekst med antall eksempler
-            document.getElementById('tab-bachelor').innerText = "Bachelorgrad (3)";
-            document.getElementById('tab-master').innerText = "Mastergrad (2)";
-            
-            // Scroller ned til resultatene på mobil
-            results.scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('results-container').classList.remove('hidden');
+            document.getElementById('results-container').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Bytter mellom bachelor og master tabs
         function switchTab(type) {
             const bachTab = document.getElementById('tab-bachelor');
             const mastTab = document.getElementById('tab-master');
@@ -447,26 +625,29 @@
             }
         }
 
-        // Åpne betalingsvindu med dynamisk info
         function openPaymentModal(title, price) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-price').innerText = price + " kr";
             document.getElementById('paymentModal').style.display = 'flex';
         }
 
-        // Åpne veiledningsvindu
         function openGuidanceModal() {
             document.getElementById('guidanceModal').style.display = 'flex';
         }
 
-        // Lukke vinduer
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
-        // Simulerer gjennomført kjøp
+        // Lukk modal hvis man klikker utenfor innholdet
+        window.onclick = function(event) {
+            if (event.target.className === 'modal') {
+                event.target.style.display = 'none';
+            }
+        }
+
         function simulatePaymentSuccess() {
-            alert("Takk for kjøpet! (Dette er en prototype, i den ekte løsningen ville detaljert rapport, innsikt i forkurs, kvoter og forbedringsmuligheter blitt låst opp nå).");
+            alert("Dette er en prototype. I den levende versjonen ville du nå blitt sendt til betaling.");
             closeModal('paymentModal');
         }
     </script>
